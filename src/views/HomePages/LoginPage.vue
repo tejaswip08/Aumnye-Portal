@@ -155,6 +155,12 @@
                               density="comfortable"
                               class="mt-1"
                               required
+                              :rules="[
+                                (v) =>
+                                  !v ||
+                                  v.length === 10 ||
+                                  'Contact number must be 10 digits',
+                              ]"
                             />
                           </v-col>
                         </v-row>
@@ -165,7 +171,7 @@
                           block
                           class="mb-4 gradient-btn"
                           :loading="SignUpLoading"
-                          @click.stop="validateSignUp"
+                          @click.prevent="validateSignUp"
                         >
                           Sign Up
                         </v-btn>
@@ -445,8 +451,12 @@ export default {
           alumnye_type: this.SignUP.AlumniType,
           user_email_id: this.SignUP.Email,
           user_name: this.SignUP.UserName,
-          user_country_code: this.SignUP.Country_Code,
-          phone_number: this.SignUP.Country_Code + this.SignUP.Contact_Number,
+          user_country_code: this.SignUP.Contact_Number
+            ? this.SignUP.Country_Code
+            : undefined,
+          phone_number: this.SignUP.Contact_Number
+            ? this.SignUP.Country_Code + this.SignUP.Contact_Number
+            : undefined,
         };
         console.log("inputparams", inputparams);
 

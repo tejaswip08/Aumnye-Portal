@@ -11,6 +11,8 @@ export default createVuetify({
         dark: false, // Set to true for a dark theme
         colors: {
           primary: "#2563eb",
+
+          BlueColorVariant1: "#4e65d9",
         },
       },
     },

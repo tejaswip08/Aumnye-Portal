@@ -9,11 +9,7 @@
     "menuPath": "/tab-one",
     "menuIcon": "mdi-school"
   },
-  {
-    "menuName": "About Me",
-    "menuPath": "/tab-one",
-    "menuIcon": "mdi-account-tie"
-  },
+
   {
     "menuName": "Users",
     "menuPath": "/all-users",
@@ -33,5 +29,10 @@
     "menuName": "Settings",
     "menuPath": "/tab-one",
     "menuIcon": "mdi-cog"
+  },
+  {
+    "menuName": "My Profile",
+    "menuPath": "/About",
+    "menuIcon": "mdi-account-tie"
   }
 ]

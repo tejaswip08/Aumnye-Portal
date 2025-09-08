@@ -6,7 +6,9 @@
 
 <style>
 @import "@/css/styles.css";
-
+.fontsize8px {
+  font-size: 8px !important;
+}
 .fontsize10px {
   font-size: 10px !important;
 }
@@ -15,6 +17,15 @@
 }
 .fontsize15px {
   font-size: 15px !important;
+}
+.fontsize17px {
+  font-size: 17px !important;
+}
+.fontsize20px {
+  font-size: 20px !important;
+}
+.fontsize25px {
+  font-size: 25px !important;
 }
 .CardBorderRadius {
   border-radius: 20px !important;

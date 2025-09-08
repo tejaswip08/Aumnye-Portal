@@ -19,7 +19,7 @@ export const getCurrentUserDetailsfile = {
         console.log("result", result);
         this.getCurrentUserDetailsObject = JSON.parse(
           result.data.GetCurrectUserDetails
-        ).data.items[0];
+        ).data.items;
         console.log("Current User", this.getCurrentUserDetailsObject);
         this.$store.commit(
           "SET_CURRENT_USER",

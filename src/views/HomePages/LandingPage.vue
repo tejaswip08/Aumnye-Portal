@@ -57,22 +57,32 @@
       </v-list>
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn
-            block
-            class="BtnHover"
-            color="black"
-            @click.stop="$router.push('/')"
-          >
-            Logout
-          </v-btn>
+          <v-card class="elevation-0">
+            <div
+              class="font-size-two font-weight-one text-center text-BlueColorVariant1"
+            >
+              <v-icon class="mr-2">mdi-school</v-icon
+              >{{ $store.getters.get_currentuser_details.alumnye_name }}
+            </div>
+            <v-btn
+              block
+              class="BtnHover mt-2"
+              color="black"
+              height="30"
+              @click.stop="$router.push('/')"
+            >
+              Logout
+            </v-btn>
+          </v-card>
         </div>
       </template>
     </v-navigation-drawer>
     <v-app-bar app color="white" elevation="1">
+      <div class="fontsize20px font-weight-one ml-5">{{ $route.name }}</div>
       <v-spacer />
-      <v-text-field
+      <!-- <v-text-field
         v-model="SearchAlumni"
-        label="Search Alumni, events.."
+        placeholder="Search Alumni, events.."
         variant="solo"
         rounded="lg"
         bg-color="#f3f4f6"
@@ -82,10 +92,12 @@
         class="mr-4 font-size-three custom-label"
         prepend-inner-icon="mdi-magnify"
         flat
-      />
+      /> -->
       <div class="mr-5 text-end">
         <div class="font-size-two font-weight-one">Admin User</div>
-        <div class="font-size-three grey-font">tejaswi@mobil80.com</div>
+        <div class="font-size-three grey-font">
+          {{ $store.getters.get_user_email }}
+        </div>
       </div>
       <v-menu transition="slide-x-transition">
         <template v-slot:activator="{ props }">
@@ -95,7 +107,7 @@
         </template>
         <v-card colo="white" width="300">
           <div class="mt-2 text-center font-size-two font-weight-one">
-            Tejaswi@mobil80.com
+            {{ $store.getters.get_user_email }}
           </div>
           <v-btn
             variant="tonal"
