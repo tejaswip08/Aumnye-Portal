@@ -1,0 +1,37 @@
+[
+  {
+    "menuName": "Dashboard",
+    "menuPath": "/tab-one",
+    "menuIcon": "mdi-view-dashboard"
+  },
+  {
+    "menuName": "About Alumni",
+    "menuPath": "/tab-one",
+    "menuIcon": "mdi-school"
+  },
+  {
+    "menuName": "About Me",
+    "menuPath": "/tab-one",
+    "menuIcon": "mdi-account-tie"
+  },
+  {
+    "menuName": "Users",
+    "menuPath": "/all-users",
+    "menuIcon": "mdi-human-male-male"
+  },
+  {
+    "menuName": "Members",
+    "menuPath": "/all-members",
+    "menuIcon": "mdi-human-male-male"
+  },
+  {
+    "menuName": "Communications",
+    "menuPath": "/tab-one",
+    "menuIcon": "mdi-forum"
+  },
+  {
+    "menuName": "Settings",
+    "menuPath": "/tab-one",
+    "menuIcon": "mdi-cog"
+  }
+]
