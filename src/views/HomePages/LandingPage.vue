@@ -69,9 +69,9 @@
       </template>
     </v-navigation-drawer>
     <v-app-bar app color="white" elevation="1">
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-text-field
-        v-model="text"
+        v-model="SearchAlumni"
         label="Search Alumni, events.."
         variant="solo"
         rounded="lg"
@@ -133,13 +133,14 @@ export default {
     drawerWidth: false,
     SwitchDrawer: false,
     menuItems: [],
+    SearchAlumni: "",
 
     SwitchAlumni: [{}],
   }),
 
-  mounted() {
+  async mounted() {
     this.menuItems = Routers;
-    this.getCurrentUserDetailsMethod();
+    await this.getCurrentUserDetailsMethod();
   },
 };
 </script>
@@ -147,14 +148,14 @@ export default {
 <style scoped>
 /* Default menu item (inactive) */
 .grey-font {
-  color: #4a4a4a !important; /* grey text */
+  color: #4a4a4a !important;
   font-weight: 500;
 }
 
 /* Active menu item */
 .menu-btn {
-  background-color: #f0f6ff !important; /* light blue background */
-  color: #1976d2 !important; /* blue text/icon */
+  background-color: #f0f6ff !important;
+  color: #1976d2 !important;
   border-radius: 8px !important;
   position: relative;
   font-weight: 600;

@@ -13,7 +13,7 @@ Amplify.configure({
     Cognito: {
       userPoolId: "us-east-1_QMvHRoX5W",
       userPoolClientId: "736272ak5fdb472uf8hu47pq8o",
-      identityPoolId: "us-east-1:e381995a-c212-4af3-8850-8b2478e8cd89",
+      identityPoolId: "us-east-1:f9fe967a-0bd5-4a03-8d46-05a01a4507d4",
       signUpVerificationMethod: "code",
       loginWith: {
         email: true,
@@ -25,7 +25,8 @@ Amplify.configure({
       endpoint:
         "https://5k2smrhpwnfcbjwjzwgmrn4rka.appsync-api.us-east-1.amazonaws.com/graphql",
       region: "us-east-1",
-      defaultAuthMode: "userPool",
+      defaultAuthMode: "apiKey",
+      apiKey: "da2-qe5ymkeb3ngonn6ppstpqi4agu",
       logger_level: "DEBUG",
     },
   },
@@ -41,7 +42,3 @@ Amplify.configure({
 const app = createApp(App);
 
 app.use(router).use(store).use(vuetify).mount("#app");
-
-// createApp(App).use(store).use(router)
-//   .use(vuetify)
-//   .mount('#app')

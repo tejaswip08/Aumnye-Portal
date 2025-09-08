@@ -6,3 +6,13 @@ export const GetCurrectUserDetails = /* GraphQL */ `
     GetCurrectUserDetails(input: $input)
   }
 `;
+export const ListAlumnyeUsers = /* GraphQL */ `
+  query ListAlumnyeUsers($input: ListAlumnyeUsersInput) {
+    ListAlumnyeUsers(input: $input)
+  }
+`;
+export const ListMembers = /* GraphQL */ `
+  query ListMembers($input: ListMembersInput) {
+    ListMembers(input: $input)
+  }
+`;

@@ -3,7 +3,7 @@
     <Snackbar :SnackBarComponent="SnackBarComponent" />
     <v-container class="login-container" fluid>
       <v-row class="full-height d-flex align-center justify-center" no-gutters>
-        <v-col cols="12" md="7" lg="9">
+        <v-col cols="12" md="8" lg="9">
           <v-card flat class="d-flex overflow-hidden login-wrapper">
             <v-row>
               <v-col
@@ -11,9 +11,6 @@
                 cols="6"
                 class="branding d-flex flex-column align-center justify-center"
               >
-                <div class="circle circle-1"></div>
-                <div class="circle circle-2"></div>
-                <div class="circle circle-3"></div>
                 <v-avatar size="110" class="mb-4" color="white">
                   <v-icon size="80" color="#425d80">mdi-school</v-icon>
                 </v-avatar>
@@ -83,7 +80,7 @@
                   <v-window-item :value="2">
                     <v-card flat class="pa-2">
                       <div class="text-center mb-6">
-                        <v-icon size="45" color="#425d80">mdi-school</v-icon>
+                        <v-icon size="45" color="primary">mdi-school</v-icon>
                         <h2 class="mt-2">Alumnye</h2>
                       </div>
 
@@ -536,37 +533,5 @@ export default {
 /* Right Form Panel */
 .form-section {
   background: #ffffff;
-}
-/* Circles inside Branding Panel */
-.branding {
-  position: relative; /* needed for absolute circles */
-  overflow: hidden; /* ensures circles don't leak outside */
-}
-
-.circle {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2); /* transparent white */
-}
-
-.circle-1 {
-  width: 180px;
-  height: 180px;
-  top: -40px;
-  left: -40px;
-}
-
-.circle-2 {
-  width: 120px;
-  height: 120px;
-  bottom: 20%;
-  right: -40px;
-}
-
-.circle-3 {
-  width: 80px;
-  height: 80px;
-  bottom: -30px;
-  left: 30%;
 }
 </style>

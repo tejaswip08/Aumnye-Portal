@@ -11,3 +11,28 @@ export const SignUpAlumnye = /* GraphQL */ `
     SignUpAlumnye(input: $input)
   }
 `;
+export const VerifyAlumnyeUser = /* GraphQL */ `
+  mutation VerifyAlumnyeUser($input: VerifyAlumnyeUserInput) {
+    VerifyAlumnyeUser(input: $input)
+  }
+`;
+export const UpdateMyDetails = /* GraphQL */ `
+  mutation UpdateMyDetails($input: UpdateMyDetailsInput) {
+    UpdateMyDetails(input: $input)
+  }
+`;
+export const CreateMember = /* GraphQL */ `
+  mutation CreateMember($input: CreateAlumnyeUserInput) {
+    CreateMember(input: $input)
+  }
+`;
+export const UpdateMember = /* GraphQL */ `
+  mutation UpdateMember($input: UpdateMemberInput) {
+    UpdateMember(input: $input)
+  }
+`;
+export const activateOrDeativateMember = /* GraphQL */ `
+  mutation ActivateOrDeativateMember($input: activateOrDeativateMemberInput) {
+    activateOrDeativateMember(input: $input)
+  }
+`;
