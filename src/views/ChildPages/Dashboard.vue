@@ -65,14 +65,88 @@
           </v-col>
         </v-row>
       </v-card>
+
+      <v-row class="mt-5">
+        <!-- Alumni Growth Card -->
+        <v-col cols="12" md="6">
+          <v-card class="pa-4 rounded-xl" height="480px" elevation="1">
+            <div class="d-flex justify-space-between align-center mb-4">
+              <h3>Alumni Growth</h3>
+              <v-select
+                v-model="selectedRange"
+                :items="ranges"
+                variant="outlined"
+                density="compact"
+                hide-details
+                style="max-width: 150px"
+              />
+            </div>
+            <apexchart
+              type="bar"
+              height="250"
+              :options="chartOptions"
+              :series="series"
+            />
+            <div class="text-center mt-4">
+              <h2 class="font-weight-bold">+647</h2>
+              <p class="text-success">New alumni this year</p>
+            </div>
+          </v-card>
+        </v-col>
+
+        <!-- Upcoming Events Card -->
+        <v-col cols="12" md="6">
+          <v-card class="pa-4 rounded-xl" elevation="1">
+            <div class="d-flex justify-space-between align-center mb-4">
+              <h3>Upcoming Events</h3>
+              <a href="#" class="text-primary text-body-2">View All</a>
+            </div>
+
+            <v-card
+              v-for="(event, i) in events"
+              :key="i"
+              class="pa-3 mb-3 d-flex justify-space-between align-center"
+              variant="outlined"
+              rounded="lg"
+            >
+              <div>
+                <div class="font-weight-medium text-body-1 mb-1">
+                  {{ event.name }}
+                </div>
+                <div class="text-caption d-flex align-center mb-1">
+                  <v-icon size="small" class="mr-1">mdi-calendar</v-icon>
+                  {{ event.date }}
+                </div>
+                <div class="text-caption d-flex align-center mb-1">
+                  <v-icon size="small" class="mr-1">mdi-map-marker</v-icon>
+                  {{ event.location }}
+                </div>
+                <div class="text-caption d-flex align-center">
+                  <v-icon size="small" class="mr-1">mdi-account-group</v-icon>
+                  {{ event.registered }} registered
+                </div>
+              </div>
+              <v-chip
+                :color="event.statusColor"
+                class="text-capitalize"
+                variant="tonal"
+                size="small"
+              >
+                {{ event.status }}
+              </v-chip>
+            </v-card>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
 import CreateUserDialog from "@/components/Users/CreateUser.vue";
+import VueApexCharts from "vue3-apexcharts";
 export default {
-  components: { CreateUserDialog },
+  components: { CreateUserDialog, apexchart: VueApexCharts },
   data: () => ({
     CreateUserDialog: false,
     cardDatas: [
@@ -129,6 +203,58 @@ export default {
         subtext: "Schedule new event",
         icon: "mdi-calendar-outline",
         color: "#ea580c",
+      },
+    ],
+
+    selectedRange: "Last 6 months",
+    ranges: ["Last 6 months", "Last 12 months", "Year to Date"],
+    series: [
+      {
+        name: "New Alumni",
+        data: [50, 120, 180, 90, 130, 77],
+      },
+    ],
+    chartOptions: {
+      chart: {
+        toolbar: { show: false },
+      },
+      xaxis: {
+        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+      },
+      colors: ["#3f51b5"],
+      plotOptions: {
+        bar: {
+          borderRadius: 6,
+          columnWidth: "45%",
+        },
+      },
+      dataLabels: { enabled: false },
+      grid: { strokeDashArray: 4 },
+    },
+    events: [
+      {
+        name: "Annual Alumni Gala",
+        date: "2025-03-15 at 7:00 PM",
+        location: "Grand Ballroom, City Hotel",
+        registered: 156,
+        status: "confirmed",
+        statusColor: "green-lighten-4",
+      },
+      {
+        name: "Tech Meetup",
+        date: "2025-02-28 at 6:30 PM",
+        location: "Innovation Center",
+        registered: 45,
+        status: "planning",
+        statusColor: "yellow-lighten-4",
+      },
+      {
+        name: "Career Fair",
+        date: "2025-04-10 at 10:00 AM",
+        location: "Campus Auditorium",
+        registered: 89,
+        status: "confirmed",
+        statusColor: "green-lighten-4",
       },
     ],
   }),

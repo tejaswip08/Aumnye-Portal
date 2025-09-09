@@ -2,12 +2,12 @@
   {
     "menuName": "Dashboard",
     "menuPath": "/tab-one",
-    "menuIcon": "mdi-view-dashboard"
+    "menuIcon": "mdi-view-dashboard-outline"
   },
   {
     "menuName": "About Alumni",
     "menuPath": "/tab-one",
-    "menuIcon": "mdi-school"
+    "menuIcon": "mdi-school-outline"
   },
 
   {
@@ -22,17 +22,17 @@
   },
   {
     "menuName": "Communications",
-    "menuPath": "/tab-one",
-    "menuIcon": "mdi-forum"
+    "menuPath": "/Communications",
+    "menuIcon": "mdi-forum-outline"
   },
   {
     "menuName": "Settings",
     "menuPath": "/tab-one",
-    "menuIcon": "mdi-cog"
+    "menuIcon": "mdi-cog-outline"
   },
   {
     "menuName": "My Profile",
     "menuPath": "/About",
-    "menuIcon": "mdi-account-tie"
+    "menuIcon": "mdi-account-tie-outline"
   }
 ]

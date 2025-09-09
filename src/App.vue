@@ -33,4 +33,7 @@
 .BtnBorderRadius {
   border-radius: 10px !important;
 }
+.CursorPointer {
+  cursor: pointer !important;
+}
 </style>

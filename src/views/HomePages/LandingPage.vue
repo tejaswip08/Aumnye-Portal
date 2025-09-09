@@ -1,5 +1,9 @@
 <template>
   <v-app>
+    <SwitchAlumniDialog
+      :SwitchAlumniDialog="SwitchAlumniDialog"
+      @click="confirmSwitch"
+    />
     <!-- Sidebar -->
     <v-navigation-drawer
       v-model="drawer"
@@ -80,52 +84,96 @@
     <v-app-bar app color="white" elevation="1">
       <div class="fontsize20px font-weight-one ml-5">{{ $route.name }}</div>
       <v-spacer />
-      <!-- <v-text-field
-        v-model="SearchAlumni"
-        placeholder="Search Alumni, events.."
-        variant="solo"
-        rounded="lg"
-        bg-color="#f3f4f6"
-        density="compact"
-        hide-details
-        style="max-width: 250px"
-        class="mr-4 font-size-three custom-label"
-        prepend-inner-icon="mdi-magnify"
-        flat
-      /> -->
       <div class="mr-5 text-end">
         <div class="font-size-two font-weight-one">Admin User</div>
         <div class="font-size-three grey-font">
           {{ $store.getters.get_user_email }}
         </div>
       </div>
-      <v-menu transition="slide-x-transition">
-        <template v-slot:activator="{ props }">
-          <v-avatar size="50" v-bind="props" class="mr-4 app-bar-avatar">
-            <v-icon color="white" size="small">mdi-account</v-icon>
-          </v-avatar>
-        </template>
-        <v-card colo="white" width="300">
-          <div class="mt-2 text-center font-size-two font-weight-one">
-            {{ $store.getters.get_user_email }}
-          </div>
-          <v-btn
-            variant="tonal"
-            color="red"
-            class="ma-2"
-            @click.stop="$router.push('/')"
-            >Logout</v-btn
-          >
-        </v-card>
-      </v-menu>
+      <v-avatar
+        size="50"
+        @click="SwitchDrawer = true"
+        class="mr-4 app-bar-avatar CursorPointer"
+      >
+        <v-icon color="white" size="small">mdi-account</v-icon>
+      </v-avatar>
     </v-app-bar>
     <v-navigation-drawer
+      v-if="SwitchDrawer"
       v-model="SwitchDrawer"
       :permanent="$vuetify.display.mobile"
       :location="$vuetify.display.mobile ? 'bottom' : 'right'"
       :width="drawerWidth ? 80 : 250"
       app
     >
+      <v-icon @click.stop="SwitchDrawer = !SwitchDrawer"
+        >mdi-chevron-double-right</v-icon
+      >
+      <div class="p-4 flex flex-col items-center text-center">
+        <v-avatar size="70">
+          <v-img
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          />
+        </v-avatar>
+        <h3 class="text-lg font-semibold mt-2">
+          {{ getCurrentUserDetailsObject.user_name }}
+        </h3>
+        <p class="text-sm text-gray-600 mt-2">
+          {{ getCurrentUserDetailsObject.user_email_id }}
+        </p>
+        <v-chip color="primary" size="small" class="mt-2">
+          {{ getCurrentUserDetailsObject.alumnye_type }}
+        </v-chip>
+      </div>
+
+      <v-divider class="my-2"></v-divider>
+
+      <!-- Details Section -->
+      <div class="px-4 py-3 text-sm">
+        <!-- <p class="mt-2">
+          <strong>Alumni:</strong>
+          {{ getCurrentUserDetailsObject.alumnye_name }}
+        </p> -->
+        <p class="mt-2">
+          <strong>Phone:</strong>
+          {{ getCurrentUserDetailsObject.user_phone_number }}
+        </p>
+        <!-- <p class="mt-2">
+          <strong>Status:</strong>
+          <v-chip
+            :color="
+              getCurrentUserDetailsObject.user_status === 'Active'
+                ? 'green'
+                : 'red'
+            "
+            size="x-small"
+            class="ml-2"
+          >
+            {{ getCurrentUserDetailsObject.user_status }}
+          </v-chip>
+        </p> -->
+        <p class="mt-2">
+          <strong>User:</strong> {{ getCurrentUserDetailsObject.user_type }}
+        </p>
+      </div>
+      <template v-slot:append>
+        <div class="pa-3">
+          <v-btn
+            block
+            rounded="xl"
+            elevation="4"
+            class="text-white backdrop-blur-md app-bar-avatar"
+            style="
+              background: rgba(255, 255, 255, 0.6);
+              border: 1px solid rgba(255, 255, 255, 0.3);
+            "
+            prepend-icon="mdi-swap-horizontal"
+            @click.stop="listalumnesMethod()"
+          >
+            Switch Alumni
+          </v-btn>
+        </div>
+      </template>
     </v-navigation-drawer>
     <v-main>
       <div class="content-div pa-4">
@@ -138,21 +186,37 @@
 <script>
 import Routers from "@/JSON/Routers.json";
 import { getCurrentUserDetailsfile } from "@/Mixins/Extras/GetCurrentUser.js";
+import { getAllMyAlumnyes } from "@/Mixins/Extras/SwitchAlumni.js";
+import SwitchAlumniDialog from "@/components/LandingPage/SwitchAlumniDialog.vue";
 export default {
-  mixins: [getCurrentUserDetailsfile],
+  components: {
+    SwitchAlumniDialog,
+  },
+  mixins: [getCurrentUserDetailsfile, getAllMyAlumnyes],
   data: () => ({
     drawer: true,
     drawerWidth: false,
     SwitchDrawer: false,
+    SwitchAlumniDialog: false,
     menuItems: [],
     SearchAlumni: "",
 
     SwitchAlumni: [{}],
+    currentUser: {},
   }),
 
   async mounted() {
     this.menuItems = Routers;
     await this.getCurrentUserDetailsMethod();
+  },
+  methods: {
+    listalumnesMethod() {
+      this.SwitchAlumniDialog = true;
+      // this.getAllMyAlumnyesDetailsMethod();
+    },
+    confirmSwitch() {
+      this.SwitchAlumniDialog = false;
+    },
   },
 };
 </script>
@@ -196,7 +260,7 @@ export default {
   border-radius: 8px;
 }
 .BtnHover:hover {
-  background-color: rgba(221, 15, 15, 0.89) !important;
+  background: linear-gradient(135deg, #4285f4, #6a1b9a) !important;
   border-radius: 8px;
 }
 </style>

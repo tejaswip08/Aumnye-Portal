@@ -2,10 +2,7 @@
   <div>
     <Snackbar :SnackBarComponent="SnackBarComponent" />
 
-    <v-card :height="CardHeight" tile class="elevation-0">
-      <!-- <v-toolbar density="compact"
-        ><v-toolbar-title>Profile</v-toolbar-title></v-toolbar
-      > -->
+    <v-card :height="CardHeight" color="transparent" tile class="elevation-0">
       <v-row class="mt-2">
         <v-col cols="12" md="4" sm="12" xs="12" class="mt-16">
           <v-card class="mx-12 elevation-1">
@@ -75,7 +72,9 @@
                 >
                   <v-row class="text-left">
                     <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="ma-2 ml-12 mt-6 text-grey font-weight-bold">
+                      <div
+                        class="ma-2 ml-12 mt-6 font-size-two font-weight-two"
+                      >
                         Name
                       </div>
                     </v-col>
@@ -103,7 +102,7 @@
                 >
                   <v-row justify="center">
                     <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="mt-6 ml-12 text-grey font-weight-bold">
+                      <div class="mt-6 ml-12 font-size-two font-weight-two">
                         Email
                       </div>
                     </v-col>
@@ -112,6 +111,7 @@
                     </v-col>
                     <v-col cols="12" md="6" xs="12" sm="12" class="text-left">
                       <v-text-field
+                        disabled
                         variant="flat"
                         density="compact"
                         bg-color="white"
@@ -132,7 +132,9 @@
                 >
                   <v-row justify="center">
                     <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="ma-2 ml-12 mt-6 text-grey font-weight-bold">
+                      <div
+                        class="ma-2 ml-12 mt-6 font-size-two font-weight-two"
+                      >
                         Role
                       </div>
                     </v-col>
@@ -142,6 +144,7 @@
                     <v-col cols="12" md="6" xs="12" sm="12" class="text-left">
                       <v-text-field
                         variant="flat"
+                        disabled
                         readonly
                         density="compact"
                         bg-color="#f0f5f8"
@@ -160,12 +163,12 @@
                 >
                   <v-row>
                     <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="text-grey ml-12 mt-4 font-weight-bold">
+                      <div class="ml-12 mt-4 font-size-two font-weight-two">
                         Contact
                       </div>
                     </v-col>
                     <v-col cols="12" md="1" xs="12" sm="12">
-                      <div class="ma-2 mt-6 font-weight-bold">:</div>
+                      <div class="ma-2 mt-4 font-weight-bold">:</div>
                     </v-col>
                     <v-col cols="12" md="6" xs="12" sm="12" class="text-left">
                       <v-text-field
@@ -178,110 +181,6 @@
                     </v-col>
                   </v-row>
                 </v-card>
-                <!-- <v-card
-                  tile
-                  class="elevation-0"
-                  color="#f0f5f8"
-                  density="compact"
-                  height="60px"
-                >
-                  <v-row justify="center">
-                    <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="ma-2 ml-12 mt-6 text-grey font-weight-bold">
-                        License Expiry Date
-                      </div>
-                    </v-col>
-                    <v-col cols="12" md="1" xs="12" sm="12">
-                      <div class="ma-2 mt-6 font-weight-bold">:</div>
-                    </v-col>
-                    <v-col cols="12" md="6" xs="12" sm="12">
-                      <v-text-field
-                        variant="flat"
-                        density="compact"
-                        bg-color="#f0f5f8"
-                        class="mt-2 custom-text-field"
-                        @click="datePickerDialog = true"
-                        v-model="CurrentUser.License_Expiry_Date"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card> -->
-                <v-dialog v-model="datePickerDialog" persistent width="320px">
-                  <v-card>
-                    <v-date-picker
-                      v-model="selectedDate"
-                      @update:model-value="updateDate"
-                      header=""
-                      :min="maxDate"
-                      color="primary"
-                      scrollable
-                    ></v-date-picker>
-
-                    <v-card-actions>
-                      <v-btn text @click="datePickerDialog = false"
-                        >Cancel</v-btn
-                      >
-                      <v-btn text @click="confirmDate">OK</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <!-- <v-card
-                  tile
-                  class="elevation-0"
-                  color="white"
-                  density="compact"
-                  height="60px"
-                >
-                  <v-row justify="center">
-                    <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="ma-2 mt-6 ml-12 text-grey font-weight-bold">
-                        License State
-                      </div>
-                    </v-col>
-                    <v-col cols="12" md="1" xs="12" sm="12">
-                      <div class="ma-2 mt-6 font-weight-bold">:</div>
-                    </v-col>
-                    <v-col cols="12" md="6" xs="12" sm="12">
-                      <v-autocomplete
-                        variant="flat"
-                        density="compact"
-                        bg-color="white"
-                        class="mt-2 custom-text-field"
-                        :items="USAStates"
-                        item-title="name"
-                        item-value="name"
-                        v-model="CurrentUser.Licensed_State"
-                      ></v-autocomplete>
-                    </v-col>
-                  </v-row>
-                </v-card> -->
-                <!-- <v-card
-                  tile
-                  class="elevation-0"
-                  color="#f0f5f8"
-                  density="compact"
-                  height="60px"
-                >
-                  <v-row justify="center">
-                    <v-col cols="12" md="5" xs="12" sm="12" class="text-left">
-                      <div class="ma-2 mt-6 ml-12 text-grey font-weight-bold">
-                        Certified Board
-                      </div>
-                    </v-col>
-                    <v-col cols="12" md="1" xs="12" sm="12">
-                      <div class="ma-2 mt-6 font-weight-bold">:</div>
-                    </v-col>
-                    <v-col cols="12" md="6" xs="12" sm="12">
-                      <v-text-field
-                        variant="flat"
-                        density="compact"
-                        bg-color="#f0f5f8"
-                        class="mt-2 custom-text-field"
-                        v-model="CurrentUser.Certified_Board"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-card> -->
               </v-col>
             </v-row>
 
@@ -299,77 +198,20 @@
         </v-col>
       </v-row>
     </v-card>
-
-    <!-- <v-row class="mr-16" justify="left">
-      <v-col cols="12" md="5" xs="12" sm="12">
-        <v-card
-          color="#f0f7ff"
-          class="rounded-xl pa-4 text-center"
-          width="1000px"
-        >
-          <v-row class="mt-2">
-            <v-col cols="12" md="12" align="center">
-              <v-card
-                height="150px"
-                width="200px"
-                color="#e5e5e5"
-                flat
-                v-if="!img && img === null"
-                class="ImageRadius"
-              >
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="CategoryImg"
-                  hidden
-                  @change="onChange"
-                />
-                <label for="CategoryImg">
-                  <v-container fluid fill-height height="100%">
-                    <v-layout align-center justify-center>
-                      <div align="center" class="ml-10">Upload Image</div>
-                    </v-layout>
-                  </v-container>
-                </label>
-              </v-card>
-              <v-card
-                height="200px"
-                width="300px"
-                color="#e5e5e5"
-                flat
-                class="mt-8"
-                v-else
-              >
-                <v-img max-height="200px" :src="img" />
-
-                <v-btn
-                  position="absolute"
-                  size="x-small"
-                  color="red"
-                  dark
-                  class="mt-n2 ml-12"
-                  depressed
-                  icon
-                  @click="removeImage"
-                >
-                  <v-icon small>mdi-close</v-icon>
-                </v-btn>
-              </v-card>
-            </v-col>
-          </v-row>
-    
-        </v-card>
-      </v-col>
-    </v-row> -->
   </div>
 </template>
 
 <script>
 import { useDisplay } from "vuetify";
 import Snackbar from "@/components/Extras/SnackBar.vue";
+import { UpdateMyDetails } from "@/graphql/mutations.js";
+import { generateClient } from "aws-amplify/api";
+const client = generateClient();
+import { getCurrentUserDetailsfile } from "@/Mixins/Extras/GetCurrentUser.js";
 
 export default {
   components: { Snackbar },
+  mixins: [getCurrentUserDetailsfile],
   data: () => ({
     selectedFile: null,
     croppedImage: null,
@@ -482,56 +324,47 @@ export default {
       try {
         this.AdminButtonLoader = true;
         let userObj = {
+          alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
           user_name:
             this.$store.getters.get_currentuser_details.user_name ===
             this.CurrentUser.User_Name.trim()
               ? undefined
               : this.CurrentUser.User_Name,
-          user_country_code:
-            this.$store.getters.get_currentuser_details.user_country_code ===
-            this.CurrentUser.User_Country_Code.trim()
+          user_email_id:
+            this.$store.getters.get_currentuser_details.user_email_id ===
+            this.CurrentUser.User_Email_Id.trim()
               ? undefined
-              : this.CurrentUser.User_Country_Code,
-          user_phone_number:
+              : this.CurrentUser.User_Email_Id,
+          user_country_code: "+91",
+          // this.$store.getters.get_currentuser_details.user_country_code ===
+          // this.CurrentUser.User_Country_Code.trim()
+          //   ? undefined
+          //   : this.CurrentUser.User_Country_Code,
+          phone_number:
             this.$store.getters.get_currentuser_details.user_phone_number ===
             this.CurrentUser.User_Contact_Number.trim()
               ? undefined
               : this.CurrentUser.User_Contact_Number.trim(),
+
           user_id: this.$store.getters.get_currentuser_details.user_id,
-          // user_profile_pic_url: UploadedResult ? UploadedResult.key : undefined,
-          license_expiry_date:
-            this.$store.getters.get_currentuser_details.license_expiry_date ==
-            this.convertToEpoch(this.CurrentUser.License_Expiry_Date)
-              ? undefined
-              : this.convertToEpoch(this.CurrentUser.License_Expiry_Date),
-          licensed_state:
-            this.$store.getters.get_currentuser_details.licensed_state ===
-            this.CurrentUser.Licensed_State.trim()
-              ? undefined
-              : this.CurrentUser.Licensed_State,
-          // // user_status: "ACTIVE",
-          action: "UPDATE",
-          // user_type: "ADMIN",
-          certified_board:
-            this.$store.getters.get_currentuser_details.certified_board ===
-            this.CurrentUser.Certified_Board.trim()
-              ? undefined
-              : this.CurrentUser.Certified_Board,
+          user_type: this.$store.getters.get_currentuser_details.user_type,
+          alumnye_type:
+            this.$store.getters.get_currentuser_details.alumnye_type,
         };
         let result = await client.graphql({
-          query: editPortalUser,
+          query: UpdateMyDetails,
           variables: { input: userObj },
         });
         console.log("myra", result);
-        var CreateUserResponse = result.data.editPortalUser;
+        var CreateUserResponse = result.data.UpdateMyDetails;
         console.log("this.CreatedUser", CreateUserResponse);
 
         this.SnackBarComponent = {
           SnackbarVmodel: true,
-          SnackbarColor: "greenColorVariant2",
+          SnackbarColor: "green",
           SnackbarText: "Profile Edited successfully",
         };
-        this.GetCurrentUser();
+        this.getCurrentUserDetailsMethod();
         this.AdminButtonLoader = false;
       } catch (error) {
         this.AdminButtonLoader = false;

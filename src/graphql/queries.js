@@ -16,3 +16,8 @@ export const ListMembers = /* GraphQL */ `
     ListMembers(input: $input)
   }
 `;
+export const ListAllMyAlumnyes = /* GraphQL */ `
+  query ListAllMyAlumnyes($input: ListAllMyAlumnyesInput) {
+    ListAllMyAlumnyes(input: $input)
+  }
+`;

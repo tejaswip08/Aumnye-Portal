@@ -83,6 +83,9 @@
     transform: scale(1); /* returns down */
   }
 }
+.BtnRadius{
+  border-radius: 10px !important;
+}
 
 /* .menu-btn {
   background: linear-gradient(

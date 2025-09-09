@@ -6,6 +6,18 @@ export const CreateAlumnyeUser = /* GraphQL */ `
     CreateAlumnyeUser(input: $input)
   }
 `;
+export const UpdateAlumnyeUser = /* GraphQL */ `
+  mutation UpdateAlumnyeUser($input: UpdateMemberInput) {
+    UpdateAlumnyeUser(input: $input)
+  }
+`;
+export const ActivateOrDeactivateAlumnyeUser = /* GraphQL */ `
+  mutation ActivateOrDeactivateAlumnyeUser(
+    $input: activateOrDeativateMemberInput
+  ) {
+    ActivateOrDeactivateAlumnyeUser(input: $input)
+  }
+`;
 export const SignUpAlumnye = /* GraphQL */ `
   mutation SignUpAlumnye($input: SignUpAlumnyeInput) {
     SignUpAlumnye(input: $input)
