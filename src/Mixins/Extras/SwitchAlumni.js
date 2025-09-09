@@ -22,10 +22,11 @@ export const getAllMyAlumnyes = {
         console.log("result", result);
         this.getAllMyAlumnyesDetailsObject = JSON.parse(
           result.data.ListAllMyAlumnyes
-        ).data.items;
+        ).data;
         console.log("My Alumnees", this.getAllMyAlumnyesDetailsObject);
 
         this.overlay = false;
+        return this.getAllMyAlumnyesDetailsObject;
       } catch (error) {
         this.overlay = false;
         console.log("error Current User", error);

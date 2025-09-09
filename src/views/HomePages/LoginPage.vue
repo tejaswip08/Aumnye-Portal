@@ -94,7 +94,7 @@
                           type="text"
                           variant="outlined"
                           color="primary"
-                          density="comfortable"
+                          density="compact"
                           required
                           :rules="[(v) => !!v || '']"
                         />
@@ -104,13 +104,13 @@
                           type="text"
                           variant="outlined"
                           color="primary"
-                          density="comfortable"
+                          density="compact"
                           :items="Alumni_Type"
                           required
                           :rules="[(v) => !!v || '']"
                         />
 
-                        <v-text-field
+                        <!-- <v-text-field
                           v-model="SignUP.UserName"
                           label="User Name *"
                           type="text"
@@ -119,19 +119,35 @@
                           density="comfortable"
                           required
                           :rules="[(v) => !!v || '']"
-                        />
+                        /> -->
+
+                        <v-select
+                          density="compact"
+                          variant="outlined"
+                          v-model="SignUP.AlumniSize"
+                          label="Alumni Size *"
+                          :items="AlumniSizeArray"
+                        ></v-select>
+
+                        <v-autocomplete
+                          density="compact"
+                          variant="outlined"
+                          v-model="SignUP.StartYear"
+                          label="Start Year *"
+                          :items="Alumni_StartYear"
+                        ></v-autocomplete>
 
                         <v-text-field
                           v-model="SignUP.Email"
-                          label="Email Address"
+                          label="Email Address *"
                           type="email"
                           variant="outlined"
                           color="primary"
-                          density="comfortable"
+                          density="compact"
                           required
                         />
 
-                        <div class="text-center mt-n4 font-weight-bold">Or</div>
+                        <!-- <div class="text-center mt-n4 font-weight-bold">Or</div>
                         <v-row>
                           <v-col cols="3">
                             <v-autocomplete
@@ -163,7 +179,7 @@
                               ]"
                             />
                           </v-col>
-                        </v-row>
+                        </v-row> -->
 
                         <v-btn
                           type="submit"
@@ -218,10 +234,14 @@ export default {
         AlumniType: "",
         UserName: "",
         Email: "",
+        AlumniSize: 1000,
+        StartYear: 2000,
         Country_Code: "+91",
         Contact_Number: "",
       },
       Alumni_Type: ["School", "University", "Corporate"],
+
+      AlumniSizeArray: [100, 1000, 10000, 100000],
 
       rules: {
         required: (v) => !!v || "",
@@ -232,6 +252,16 @@ export default {
       IsOTPFieldEnabled: false,
     };
   },
+  computed: {
+    Alumni_StartYear() {
+      let years = [];
+      for (let i = 2025; i >= 1900; i--) {
+        years.push(i);
+      }
+      return years;
+    },
+  },
+
   methods: {
     handleLogin() {
       console.log("Login form submitted:", this.form);
@@ -450,13 +480,13 @@ export default {
           alumnye_name: this.SignUP.AlumniName,
           alumnye_type: this.SignUP.AlumniType,
           user_email_id: this.SignUP.Email,
-          user_name: this.SignUP.UserName,
-          user_country_code: this.SignUP.Contact_Number
-            ? this.SignUP.Country_Code
-            : undefined,
-          phone_number: this.SignUP.Contact_Number
-            ? this.SignUP.Country_Code + this.SignUP.Contact_Number
-            : undefined,
+          // user_name: this.SignUP.UserName,
+          // user_country_code: this.SignUP.Contact_Number
+          //   ? this.SignUP.Country_Code
+          //   : undefined,
+          // phone_number: this.SignUP.Contact_Number
+          //   ? this.SignUP.Country_Code + this.SignUP.Contact_Number
+          //   : undefined,
         };
         console.log("inputparams", inputparams);
 

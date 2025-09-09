@@ -2,7 +2,11 @@
   <v-app>
     <SwitchAlumniDialog
       :SwitchAlumniDialog="SwitchAlumniDialog"
-      @click="confirmSwitch"
+      @clicked="confirmSwitch"
+    />
+    <UpdateCurrentUserDialog
+      :UpdateCurrentUserDialog="UpdateCurrentUserDialog"
+      @clicked="InviteMemberDialogEmit"
     />
     <!-- Sidebar -->
     <v-navigation-drawer
@@ -62,12 +66,6 @@
       <template v-slot:append>
         <div class="pa-2">
           <v-card class="elevation-0">
-            <div
-              class="font-size-two font-weight-one text-center text-BlueColorVariant1"
-            >
-              <v-icon class="mr-2">mdi-school</v-icon
-              >{{ $store.getters.get_currentuser_details.alumnye_name }}
-            </div>
             <v-btn
               block
               class="BtnHover mt-2"
@@ -84,19 +82,130 @@
     <v-app-bar app color="white" elevation="1">
       <div class="fontsize20px font-weight-one ml-5">{{ $route.name }}</div>
       <v-spacer />
-      <div class="mr-5 text-end">
-        <div class="font-size-two font-weight-one">Admin User</div>
+
+      <div class="mr-5 text-start">
+        <div class="font-size-two font-weight-one">
+          {{ $store.getters.get_currentuser_details.alumnye_name }}
+          <!-- <span>
+            <v-switch
+              elevation="0"
+              size="small"
+              @click.stop="listalumnesMethod()"
+            >
+            </v-switch>
+          </span> -->
+        </div>
         <div class="font-size-three grey-font">
-          {{ $store.getters.get_user_email }}
+          {{ $store.getters.get_currentuser_details.user_type }}
         </div>
       </div>
-      <v-avatar
+
+      <!-- <v-avatar
         size="50"
         @click="SwitchDrawer = true"
         class="mr-4 app-bar-avatar CursorPointer"
       >
-        <v-icon color="white" size="small">mdi-account</v-icon>
-      </v-avatar>
+        <span
+          v-if="$store.getters.get_currentuser_details.user_email_id"
+          class="text-white"
+          size="small"
+          >{{
+            $store.getters.get_currentuser_details.user_name.slice(0, 2)
+          }}</span
+        >
+      </v-avatar> -->
+      <v-menu
+        v-model="menu"
+        transition="slide-x-transition"
+        :close-on-content-click="false"
+      >
+        <template v-slot:activator="{ props }">
+          <v-avatar
+            v-bind="props"
+            size="50"
+            class="mr-4 app-bar-avatar CursorPointer"
+          >
+            <span
+              v-if="$store.getters.get_currentuser_details.user_name"
+              class="text-white"
+              size="small"
+              >{{
+                $store.getters.get_currentuser_details.user_name.slice(0, 2)
+              }}</span
+            >
+          </v-avatar>
+        </template>
+
+        <v-card class="card-property pa-3" elevation="1" :width="300">
+          <v-card-actions class="mt-n2">
+            <v-spacer />
+            <v-icon @click="menu = false">mdi-close</v-icon>
+          </v-card-actions>
+          <div class="p-4 flex flex-col items-center text-center">
+            <v-avatar size="70">
+              <v-img
+                src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+              />
+            </v-avatar>
+            <h3 class="text-lg font-semibold mt-2">
+              {{ $store.getters.get_currentuser_details.user_name }}
+            </h3>
+            <p class="text-sm text-gray-600 mt-1">
+              {{ $store.getters.get_currentuser_details.user_email_id }}
+            </p>
+          </div>
+          <v-btn
+            class="app-bar-avatar mt-4 text-white"
+            block
+            @click.stop="updateProfileDialog"
+            ><v-icon class="mr-2">mdi-pencil</v-icon>Update Profile</v-btn
+          >
+
+          <v-expansion-panels
+            class="mt-4 rounded-lg elevation-1"
+            variant="accordion"
+          >
+            <v-expansion-panel>
+              <v-expansion-panel-title class="font-weight-medium">
+                <v-icon class="mr-2 text-primary">mdi-school</v-icon>
+                Switch Alumni
+              </v-expansion-panel-title>
+
+              <!-- Content -->
+              <v-expansion-panel-text class="pt-2">
+                <v-list density="compact">
+                  <v-list-item
+                    v-for="(alumni, index) in alumniList"
+                    :key="index"
+                    class="rounded-lg mb-2 CursorPointer hover-list-item"
+                    :ripple="false"
+                  >
+                    <!-- Avatar -->
+                    <template v-slot:prepend>
+                      <v-avatar
+                        size="36"
+                        class="mr-3 text-white font-weight-bold app-bar-avatar"
+                      >
+                        {{ alumni.alumnye_name.slice(0, 2).toUpperCase() }}
+                      </v-avatar>
+                    </template>
+
+                    <!-- Alumni Info -->
+                    <v-list-item-title class="font-weight-medium">
+                      {{ alumni.alumnye_name }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      <v-chip size="x-small" color="blue" variant="outlined">
+                        {{ alumni.alumnye_type }}
+                      </v-chip>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card>
+      </v-menu>
     </v-app-bar>
     <v-navigation-drawer
       v-if="SwitchDrawer"
@@ -116,44 +225,27 @@
           />
         </v-avatar>
         <h3 class="text-lg font-semibold mt-2">
-          {{ getCurrentUserDetailsObject.user_name }}
+          {{ $store.getters.get_currentuser_details.user_name }}
         </h3>
         <p class="text-sm text-gray-600 mt-2">
-          {{ getCurrentUserDetailsObject.user_email_id }}
+          {{ $store.getters.get_currentuser_details.user_email_id }}
         </p>
         <v-chip color="primary" size="small" class="mt-2">
-          {{ getCurrentUserDetailsObject.alumnye_type }}
+          {{ $store.getters.get_currentuser_details.alumnye_type }}
         </v-chip>
       </div>
 
-      <v-divider class="my-2"></v-divider>
+      <v-divider class="my-2" />
 
-      <!-- Details Section -->
       <div class="px-4 py-3 text-sm">
-        <!-- <p class="mt-2">
-          <strong>Alumni:</strong>
-          {{ getCurrentUserDetailsObject.alumnye_name }}
-        </p> -->
         <p class="mt-2">
           <strong>Phone:</strong>
-          {{ getCurrentUserDetailsObject.user_phone_number }}
+          {{ $store.getters.get_currentuser_details.user_phone_number }}
         </p>
-        <!-- <p class="mt-2">
-          <strong>Status:</strong>
-          <v-chip
-            :color="
-              getCurrentUserDetailsObject.user_status === 'Active'
-                ? 'green'
-                : 'red'
-            "
-            size="x-small"
-            class="ml-2"
-          >
-            {{ getCurrentUserDetailsObject.user_status }}
-          </v-chip>
-        </p> -->
+
         <p class="mt-2">
-          <strong>User:</strong> {{ getCurrentUserDetailsObject.user_type }}
+          <strong>User:</strong>
+          {{ $store.getters.get_currentuser_details.user_type }}
         </p>
       </div>
       <template v-slot:append>
@@ -186,23 +278,31 @@
 <script>
 import Routers from "@/JSON/Routers.json";
 import { getCurrentUserDetailsfile } from "@/Mixins/Extras/GetCurrentUser.js";
-import { getAllMyAlumnyes } from "@/Mixins/Extras/SwitchAlumni.js";
 import SwitchAlumniDialog from "@/components/LandingPage/SwitchAlumniDialog.vue";
+import UpdateCurrentUserDialog from "@/components/LandingPage/CurrentUserUpdate.vue";
 export default {
   components: {
     SwitchAlumniDialog,
+    UpdateCurrentUserDialog,
   },
-  mixins: [getCurrentUserDetailsfile, getAllMyAlumnyes],
+  mixins: [getCurrentUserDetailsfile],
   data: () => ({
     drawer: true,
+    menu: false,
     drawerWidth: false,
     SwitchDrawer: false,
     SwitchAlumniDialog: false,
+    UpdateCurrentUserDialog: false,
     menuItems: [],
     SearchAlumni: "",
 
     SwitchAlumni: [{}],
     currentUser: {},
+    alumniList: [
+      { alumnye_name: "Mobil80", alumnye_type: "Corporate" },
+      { alumnye_name: "EduLink", alumnye_type: "Educational" },
+      { alumnye_name: "TechPioneers", alumnye_type: "Startup" },
+    ],
   }),
 
   async mounted() {
@@ -212,10 +312,16 @@ export default {
   methods: {
     listalumnesMethod() {
       this.SwitchAlumniDialog = true;
-      // this.getAllMyAlumnyesDetailsMethod();
     },
     confirmSwitch() {
       this.SwitchAlumniDialog = false;
+    },
+    updateProfileDialog() {
+      this.menu = false;
+      this.UpdateCurrentUserDialog = true;
+    },
+    InviteMemberDialogEmit() {
+      this.UpdateCurrentUserDialog = false;
     },
   },
 };
@@ -262,5 +368,11 @@ export default {
 .BtnHover:hover {
   background: linear-gradient(135deg, #4285f4, #6a1b9a) !important;
   border-radius: 8px;
+}
+.hover-list-item {
+  transition: background-color 0.2s;
+}
+.hover-list-item:hover {
+  background-color: #f5f7fa;
 }
 </style>

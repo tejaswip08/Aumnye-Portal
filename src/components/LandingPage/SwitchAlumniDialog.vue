@@ -4,29 +4,34 @@
       persistent
       max-width="600"
       :model-value="SwitchAlumniDialog"
-      overlay-opacity="0.8"
-      @update:model-value="$emit('update:SwitchAlumniDialog', $event)"
+      opacity="0.9"
     >
-      <v-card class="pa-4 rounded-xl">
-        <!-- Header -->
-        <div class="d-flex justify-space-between align-center mb-4">
-          <h3 class="font-weight-bold">Switch Alumni</h3>
-          <v-btn icon variant="text" @click="confirmSwitch()">
+      <v-card class="rounded-xl">
+        <v-toolbar density="comfortable" color="white">
+          <h3 class="font-weight-bold ml-4">Switch Alumni</h3>
+          <v-spacer />
+          <v-btn rounded class="mr-4" icon @click="confirmSwitch()">
             <v-icon>mdi-close</v-icon>
           </v-btn>
+        </v-toolbar>
+
+        <v-divider horizontal />
+
+        <div v-if="!alumniList.length" align="center" class="my-4">
+          <v-progress-circular indeterminate color="primary" size="50" />
         </div>
 
         <!-- Alumni List -->
-        <v-list>
+        <v-list v-if="alumniList && alumniList.length" class="pa-3">
           <v-list-item
             v-for="(alumni, index) in alumniList"
-            :key="index"
+            :key="alumni.alumnye_id"
             class="py-3 px-2 rounded-lg mb-2"
             variant="outlined"
           >
             <!-- Left Avatar -->
             <template v-slot:prepend>
-              <v-avatar color="primary" size="40" class="mr-3">
+              <v-avatar size="40" class="mr-3 text-white app-bar-avatar">
                 {{ alumni.alumnye_name.slice(0, 2) }}
               </v-avatar>
             </template>
@@ -45,12 +50,12 @@
             <template v-slot:append>
               <div class="d-flex align-center">
                 <v-btn
-                  color="primary"
+                  class="app-bar-avatar text-capitalize text-white"
                   size="small"
-                  variant="outlined"
+                  variant="elevated"
                   @click="confirmSwitch()"
                 >
-                  <v-icon class="mr-1">mdi-refresh</v-icon>Switch
+                  <v-icon class="mr-1">mdi-swap-horizontal</v-icon>Switch
                 </v-btn>
               </div>
             </template>
@@ -62,29 +67,23 @@
 </template>
 
 <script>
+import { getAllMyAlumnyes } from "@/Mixins/Extras/SwitchAlumni.js";
+
 export default {
   props: {
     SwitchAlumniDialog: Boolean,
   },
+  mixins: [getAllMyAlumnyes],
+  watch: {
+    async SwitchAlumniDialog(val) {
+      if (val == true) {
+        this.alumniList = await this.getAllMyAlumnyesDetailsMethod();
+      }
+    },
+  },
   data() {
     return {
-      alumniList: [
-        {
-          alumnye_name: "Mobil80",
-          alumnye_id: "3f717991e51-9c46-b7530dc",
-          alumnye_type: "Corporate",
-        },
-        {
-          alumnye_name: "EduLink",
-          alumnye_id: "7a18f992a91-8d12-cc930da",
-          alumnye_type: "Educational",
-        },
-        {
-          alumnye_name: "TechPioneers",
-          alumnye_id: "ab92f8721b3-5a33-xd720ec",
-          alumnye_type: "Startup",
-        },
-      ],
+      alumniList: [],
     };
   },
   methods: {

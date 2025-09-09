@@ -38,33 +38,6 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-card class="mt-5 pa-5">
-        <div class="fontsize17px font-weight-one">Quick Actions</div>
-
-        <v-row class="mt-3">
-          <v-col
-            cols="12"
-            lg="3"
-            v-for="(cardData, index) in QuickActions"
-            :key="index"
-          >
-            <v-card
-              class="card-property pa-5 elevation-0"
-              :color="cardData.color"
-              elevation="0"
-            >
-              <div class="text-center">
-                <v-icon size="30" color="white">{{ cardData.icon }}</v-icon>
-
-                <div class="mt-1">
-                  {{ cardData.text }}
-                </div>
-                <div class="fontsize10px">{{ cardData.subtext }}</div>
-              </div>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-card>
 
       <v-row class="mt-5">
         <!-- Alumni Growth Card -->
