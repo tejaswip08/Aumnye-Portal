@@ -2,8 +2,8 @@
   <div>
     <Snackbar :SnackBarComponent="SnackBarComponent" />
     <v-container class="login-container" fluid>
-      <v-row class="full-height d-flex align-center justify-center" no-gutters>
-        <v-col cols="12" md="7" lg="9">
+      <v-row class="d-flex align-center justify-center" no-gutters>
+        <v-col cols="12" md="7" lg="8">
           <v-card flat class="d-flex overflow-hidden login-wrapper">
             <v-row>
               <v-col
@@ -145,6 +145,11 @@
                           color="primary"
                           density="compact"
                           required
+                          :rules="[
+                            (v) => !!v || '',
+                            (v) => /.+@.+\..+/.test(v) || 'Email must be Valid',
+                            (v) => !!v || '',
+                          ]"
                         />
 
                         <!-- <div class="text-center mt-n4 font-weight-bold">Or</div>
@@ -517,7 +522,7 @@ export default {
       }
     },
     ActivateMethod() {
-      this.$router.push("/LandingPage");
+      this.$router.push("/landing-page");
     },
   },
 };
@@ -532,13 +537,9 @@ export default {
   background: #f0f4f8;
 }
 
-.full-height {
-  height: 85vh !important; /* ensures vertical centering */
-}
-
 /* Card Wrapper */
 .login-wrapper {
-  min-height: 620px !important;
+  min-height: 570px !important;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15);

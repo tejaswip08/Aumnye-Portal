@@ -17,6 +17,10 @@
   font-size: 13px !important;
 }
 
+.font-size-four {
+  font-size: 17px !important;
+}
+
 .font-weight-one {
   font-weight: 600;
 }
@@ -30,8 +34,31 @@
 }
 
 .menu-btn {
-  background-color: #eff6ff !important;
-  color: #2563eb !important;
+  background-color: #f0f6ff !important;
+  color: #1976d2 !important;
+  border-radius: 8px !important;
+  position: relative;
+  font-weight: 600;
+}
+
+.menu-btn::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  bottom: 1px;
+  width: 4px;
+  background-color: #1976d2;
+  border-radius: 4px;
+}
+
+.menu-btn .v-icon {
+  color: #1976d2 !important;
+}
+
+.v-list-item:hover:not(.menu-btn) {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border-radius: 8px;
 }
 
 .text-field-one {
@@ -46,7 +73,7 @@
 }
 
 .custom-label .v-field-label {
-  font-size: 13px; /* change as needed */
+  font-size: 13px;
 }
 
 .disable-menu-name {
@@ -66,10 +93,15 @@
 
 .card-property {
   border-radius: 10px !important;
-  border: 1px solid rgb(245, 242, 242) !important;
+  border: 1px solid #e5e7eb !important;
 }
-.card-property:hover {
+
+.card-property-hover:hover {
   animation: pop 0.4s ease forwards;
+}
+
+.CursorPointer {
+  cursor: pointer !important;
 }
 
 @keyframes pop {
@@ -77,22 +109,68 @@
     transform: scale(1);
   }
   50% {
-    transform: scale(1.05); /* pops up */
+    transform: scale(1.05);
   }
   100% {
-    transform: scale(1); /* returns down */
+    transform: scale(1);
   }
 }
-.BtnRadius{
+
+.fontsize10px {
+  font-size: 10px !important;
+}
+.fontsize12px {
+  font-size: 12px !important;
+}
+.fontsize15px {
+  font-size: 15px !important;
+}
+.CardBorderRadius {
+  border-radius: 20px !important;
+}
+.BtnBorderRadius {
   border-radius: 10px !important;
 }
 
+.BtnHover:hover {
+  background-color: rgba(221, 15, 15, 0.89) !important;
+  border-radius: 8px;
+}
 
-/* .menu-btn {
-  background: linear-gradient(
-    to right,
-    #2563eb 0 40px,
-    #eff6ff 40px 100%
-  ) !important;
-  color: #2563eb !important;
-} */
+.fontsize8px {
+  font-size: 8px !important;
+}
+.fontsize10px {
+  font-size: 10px !important;
+}
+.fontsize12px {
+  font-size: 12px !important;
+}
+.fontsize15px {
+  font-size: 15px !important;
+}
+.fontsize17px {
+  font-size: 17px !important;
+}
+.fontsize20px {
+  font-size: 20px !important;
+}
+.fontsize25px {
+  font-size: 25px !important;
+}
+.CardBorderRadius {
+  border-radius: 20px !important;
+}
+.BtnBorderRadius {
+  border-radius: 10px !important;
+}
+
+.TableValFontsize td {
+  font-size: 13px !important;
+}
+
+.expansion-panel-one {
+  border-radius: 30px !important;
+  border: 1px solid #e5e7eb !important;
+  background-color: #f3f4f6 !important;
+}

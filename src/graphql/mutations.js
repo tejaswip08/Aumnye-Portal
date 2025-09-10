@@ -48,3 +48,8 @@ export const activateOrDeativateMember = /* GraphQL */ `
     activateOrDeativateMember(input: $input)
   }
 `;
+export const SwitchAlumnye = /* GraphQL */ `
+  mutation SwitchAlumnye($input: SwitchAlumnyeInput) {
+    SwitchAlumnye(input: $input)
+  }
+`;

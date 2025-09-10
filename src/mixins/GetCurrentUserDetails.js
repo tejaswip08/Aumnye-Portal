@@ -28,7 +28,7 @@ export const getCurrentUserDetailsfile = {
         this.overlay = false;
       } catch (error) {
         this.overlay = false;
-        console.log("error Current User", error);
+        console.log("error", error);
         // this.$router.push("/");
       }
     },

@@ -7,24 +7,49 @@ const routes = [
     component: () => import("@/views/HomePages/LoginPage.vue"),
   },
   {
-    path: "/LandingPage",
+    path: "/landing-page",
     name: "LandingPage",
     component: () => import("@/views/HomePages/LandingPage.vue"),
     children: [
       {
-        path: "/tab-one",
+        path: "/my-dashboard",
         name: "Dashboard",
         component: () => import("@/views/ChildPages/Dashboard.vue"),
       },
       {
-        path: "/Communications",
-        name: "Communications",
-        component: () => import("@/views/ChildPages/Communications.vue"),
+        path: "/all-admins",
+        name: "Admins",
+        component: () => import("@/views/ChildPages/AllUsers.vue"),
       },
       {
-        path: "/About",
-        name: "My Profile",
-        component: () => import("@/views/ChildPages/AboutMe.vue"),
+        path: "/all-members",
+        name: "Members",
+        component: () => import("@/views/ChildPages/AllMembers.vue"),
+      },
+      {
+        path: "/about-alumni",
+        name: "About Alumni",
+        component: () => import("@/views/ChildPages/AboutAlumni.vue"),
+      },
+      {
+        path: "/settings",
+        name: "Settings",
+        component: () => import("@/views/ChildPages/Settings.vue"),
+      },
+      {
+        path: "/approvals",
+        name: "Approvals",
+        component: () => import("@/views/ChildPages/Approvals.vue"),
+      },
+      {
+        path: "/announcements",
+        name: "Announcements",
+        component: () => import("@/views/ChildPages/Announcements.vue"),
+      },
+      {
+        path: "/events",
+        name: "Events",
+        component: () => import("@/views/ChildPages/Events.vue"),
       },
     ],
   },

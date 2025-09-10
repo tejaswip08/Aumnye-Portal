@@ -1,38 +1,44 @@
 [
   {
     "menuName": "Dashboard",
-    "menuPath": "/tab-one",
+    "menuPath": "/my-dashboard",
     "menuIcon": "mdi-view-dashboard-outline"
-  },
-  {
-    "menuName": "About Alumni",
-    "menuPath": "/tab-one",
-    "menuIcon": "mdi-school-outline"
-  },
-
-  {
-    "menuName": "Users",
-    "menuPath": "/all-users",
-    "menuIcon": "mdi-human-male-male"
   },
   {
     "menuName": "Members",
     "menuPath": "/all-members",
-    "menuIcon": "mdi-human-male-male"
+    "menuIcon": "mdi-crown-outline"
   },
   {
-    "menuName": "Communications",
-    "menuPath": "/Communications",
-    "menuIcon": "mdi-forum-outline"
+    "menuName": "Events",
+    "menuPath": "/events",
+    "menuIcon": "mdi-calendar-outline"
+  },
+  {
+    "menuName": "Announcements",
+    "menuPath": "/announcements",
+    "menuIcon": "mdi-bullhorn-outline"
+  },
+  {
+    "menuName": "Approvals",
+    "menuPath": "/approvals",
+    "menuIcon": "mdi-check-decagram-outline"
   },
   {
     "menuName": "Settings",
-    "menuPath": "/tab-one",
-    "menuIcon": "mdi-cog-outline"
-  },
-  {
-    "menuName": "My Profile",
-    "menuPath": "/About",
-    "menuIcon": "mdi-account-tie-outline"
+    "menuPath": "/settings",
+    "menuIcon": "mdi-cog-outline",
+    "subMenu": [
+      {
+        "menuName": "About Alumni",
+        "menuPath": "/about-alumni",
+        "menuIcon": "mdi-school-outline"
+      },
+      {
+        "menuName": "Admins",
+        "menuPath": "/all-admins",
+        "menuIcon": "mdi-account-tie-outline"
+      }
+    ]
   }
 ]
