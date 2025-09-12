@@ -92,6 +92,7 @@
               }}</v-avatar>
             </div>
           </template>
+          <!-- ṭest -->
           <template v-slot:[`item.sl_no`]="{ item, index }">
             {{ index + 1 }}
           </template>
