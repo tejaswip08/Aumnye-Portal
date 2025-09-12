@@ -1,36 +1,36 @@
-name: 🚀 Build & Deploy on Push
+name: Build on Push
 
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout Code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: ⚙️ Set Up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "18" # Adjust this as needed
 
-      - name: 📦 Install Dependencies
-        run: npm install
+      - name: Install Dependencies
+        run: npm install # Use the appropriate package manager for your project
 
-      - name: 🏗️ Build Project
-        run: npm run build
+      - name: Build Project
+        run: npm run build # Adjust this command based on your build process
 
-      - name: 🔑 Configure AWS CLI
+      - name: Configure AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: ☁️🚀 Sync DIST to S3
+      - name: Sync dist folder to S3 PORTAL
         run: |
           aws s3 sync dist/ s3://webapp.alumnye.com/PORTAL/ --delete
