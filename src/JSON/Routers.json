@@ -27,18 +27,6 @@
   {
     "menuName": "Settings",
     "menuPath": "/settings",
-    "menuIcon": "mdi-cog-outline",
-    "subMenu": [
-      {
-        "menuName": "About Alumni",
-        "menuPath": "/about-alumni",
-        "menuIcon": "mdi-school-outline"
-      },
-      {
-        "menuName": "Admins",
-        "menuPath": "/all-admins",
-        "menuIcon": "mdi-account-tie-outline"
-      }
-    ]
+    "menuIcon": "mdi-cog-outline"
   }
 ]

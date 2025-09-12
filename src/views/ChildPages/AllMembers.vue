@@ -1,6 +1,7 @@
 <template>
   <div>
-    <v-toolbar color="transparent">
+    <Overlay :Overlay="enableOverlay" />
+    <!-- <v-toolbar color="transparent">
       <div>
         <div class="font-size-one font-weight-one">All Members</div>
       </div>
@@ -18,19 +19,62 @@
         prepend-inner-icon="mdi-magnify"
       />
       <v-btn
-        size="small"
-        variant="flat"
+        variant="tonal"
         color="primary"
         class="text-capitalize font-size-three"
         @click="inviteMemberMethod()"
-        >Invite Member <v-icon size="17">mdi-plus</v-icon></v-btn
-      >
-    </v-toolbar>
+        >Invite Member
+        <span
+          style="display: inline-flex; width: 16px; height: 16px"
+          class="ml-1"
+        >
+          <UserPlusIcon class="text-primary" /> </span
+      ></v-btn>
+    </v-toolbar> -->
     <v-card elevation="0" class="card-property">
       <v-card-text>
+        <div class="d-flex justify-end mb-6">
+          <div>
+            <v-text-field
+              v-model="search"
+              color="primary"
+              label="Search Members"
+              variant="outlined"
+              rounded="lg"
+              density="compact"
+              hide-details
+              style="width: 250px"
+              class="mr-4 custom-label"
+              prepend-inner-icon="mdi-magnify"
+            />
+          </div>
+          <div>
+            <v-btn
+              variant="tonal"
+              color="primary"
+              class="text-capitalize font-size-three"
+              @click="inviteMemberMethod()"
+              >Invite Member
+              <span
+                style="display: inline-flex; width: 16px; height: 16px"
+                class="ml-1"
+              >
+                <UserPlusIcon class="text-primary" /> </span
+            ></v-btn>
+          </div>
+        </div>
         <v-data-table
+          fixed-header
           density="compact"
-          :headers="membersHeader"
+          :headers="
+            CurrentUserDeatils.alumnnye_details &&
+            CurrentUserDeatils.alumnnye_details.alumnye_type == 'UNIVERSITY'
+              ? membersHeader.filter(
+                  (item) =>
+                    item.value != 'company' && item.value != 'designation'
+                )
+              : membersHeader
+          "
           :items="membersItems"
           :loading="tableLoading"
           :height="tableHeight"
@@ -39,13 +83,36 @@
           :page-count="pageCount"
           @update:page="page = $event"
           hide-default-footer
+          class="TableValFontsize mt-2"
         >
-          <template v-slot:[`item.user_name`]="{ item }">
-            <div class="ma-2">
+          <template v-slot:[`item.avatar`]="{ item }">
+            <div class="mt-1 mb-1" sty>
               <v-avatar size="40" class="app-bar-avatar text-white">{{
-                item.user_name.slice(0, 2).toUpperCase()
+                item.user_email_id.slice(0, 2).toUpperCase()
               }}</v-avatar>
-              <span class="ml-2">{{ item.user_name }}</span>
+            </div>
+          </template>
+          <template v-slot:[`item.sl_no`]="{ item, index }">
+            {{ index + 1 }}
+          </template>
+          <template v-slot:[`item.user_created_on`]="{ item }">
+            {{ new Date(item.user_created_on).toLocaleDateString("en-GB") }}
+          </template>
+          <template v-slot:[`item.user_status`]="{ item }">
+            <div>
+              <v-chip
+                variant="tonal"
+                :color="
+                  item.user_status == 'Active'
+                    ? 'green'
+                    : item.user_status == 'Pending'
+                    ? 'orange'
+                    : 'primary'
+                "
+                size="small"
+              >
+                {{ item.user_status }}
+              </v-chip>
             </div>
           </template>
           <template v-slot:[`item.actions`]="{ item }">
@@ -94,15 +161,18 @@
 
 <script>
 import InviteMember from "@/components/AllMembers/InviteMembers.vue";
-import { PencilSquareIcon } from "@heroicons/vue/24/solid";
+import Overlay from "@/components/Extras/Overlay.vue";
+import { PencilSquareIcon, UserPlusIcon } from "@heroicons/vue/24/solid";
 
 import { ListMembersData } from "@/mixins/Members/GetMembers.js";
 
 export default {
   mixins: [ListMembersData],
   components: {
+    Overlay,
     InviteMember,
     PencilSquareIcon,
+    UserPlusIcon,
   },
   data: () => ({
     page: 1,
@@ -111,18 +181,27 @@ export default {
     tableHeight: 0,
     tableLoading: false,
     InviteMemberDialog: false,
+    enableOverlay: false,
     membersHeader: [
+      {
+        title: "Sl No",
+        value: "sl_no",
+      },
+      {
+        title: "",
+        value: "avatar",
+      },
       {
         title: "Name",
         value: "user_name",
       },
       {
         title: "Phone Number",
-        value: "phone_number",
+        value: "user_phone_number",
       },
       {
         title: "Email ID",
-        value: "email",
+        value: "user_email_id",
       },
 
       {
@@ -134,67 +213,36 @@ export default {
         value: "designation",
       },
       {
+        title: "Year of Joining",
+        value: "year_of_joining",
+      },
+      {
+        title: "Status",
+        value: "user_status",
+      },
+      {
+        title: "Created On",
+        value: "user_created_on",
+      },
+      {
+        title: "Invited By",
+        value: "onboarded_by_name",
+      },
+      {
         title: "Actions",
         value: "actions",
       },
     ],
-    membersItems: [
-      {
-        user_name: "Tejaswi P",
-        phone_number: "+91 9876543210",
-        email: "tejaswi@example.com",
-        country: "India",
-        company: "TechCorp",
-        designation: "Software Engineer",
-        type: "Admin",
-        actions: "Edit | Delete",
-      },
-      {
-        user_name: "John Doe",
-        phone_number: "+1 555-123-4567",
-        email: "john@example.com",
-        country: "USA",
-        company: "Innovate Inc.",
-        designation: "Product Manager",
-        type: "Member",
-        actions: "Edit | Delete",
-      },
-      {
-        user_name: "Priya Sharma",
-        phone_number: "+91 9123456789",
-        email: "priya@example.com",
-        country: "India",
-        company: "WebWorks",
-        designation: "Designer",
-        type: "Member",
-        actions: "Edit | Delete",
-      },
-      {
-        user_name: "Michael Lee",
-        phone_number: "+44 7700 900123",
-        email: "michael@example.com",
-        country: "UK",
-        company: "GlobalSoft",
-        designation: "Data Analyst",
-        type: "Member",
-        actions: "Edit | Delete",
-      },
-      {
-        user_name: "Aisha Khan",
-        phone_number: "+971 50 1234567",
-        email: "aisha@example.com",
-        country: "UAE",
-        company: "NextGen Solutions",
-        designation: "HR Manager",
-        type: "Admin",
-        actions: "Edit | Delete",
-      },
-    ],
+    membersItems: [],
+    CurrentUserDeatils: {},
   }),
 
   async mounted() {
     this.tableHeight = window.innerHeight - 260;
-    await this.ListMembersMethod();
+    this.membersItems = await this.ListMembersMethod();
+    this.CurrentUserDeatils = {
+      ...this.$store.getters.get_currentuser_details,
+    };
     const sessionStData = sessionStorage.getItem("OPEN_CREATE_DIALOG");
     const parsedSessionStData = sessionStData
       ? JSON.parse(sessionStData)
@@ -213,7 +261,7 @@ export default {
     async InviteMemberDialogEmit(Toggle) {
       this.InviteMemberDialog = false;
       if (Toggle == 2) {
-        await this.ListMembersMethod();
+        this.membersItems = await this.ListMembersMethod();
       }
     },
   },

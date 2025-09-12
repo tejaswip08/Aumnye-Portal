@@ -53,3 +53,10 @@ export const SwitchAlumnye = /* GraphQL */ `
     SwitchAlumnye(input: $input)
   }
 `;
+export const ApproveOrRejectPendingMember = /* GraphQL */ `
+  mutation ApproveOrRejectPendingMember(
+    $input: ApproveOrRejectPendingMemberInput
+  ) {
+    ApproveOrRejectPendingMember(input: $input)
+  }
+`;

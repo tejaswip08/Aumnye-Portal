@@ -16,8 +16,23 @@ export const ListMembers = /* GraphQL */ `
     ListMembers(input: $input)
   }
 `;
+export const ListPendingMembers = /* GraphQL */ `
+  query ListPendingMembers($input: ListMembersInput) {
+    ListPendingMembers(input: $input)
+  }
+`;
 export const ListAllMyAlumnyes = /* GraphQL */ `
   query ListAllMyAlumnyes($input: ListAllMyAlumnyesInput) {
     ListAllMyAlumnyes(input: $input)
+  }
+`;
+export const GetMonthlyReport = /* GraphQL */ `
+  query GetMonthlyReport($input: GetMonthlyReportInput) {
+    GetMonthlyReport(input: $input)
+  }
+`;
+export const GetParticularMonthReport = /* GraphQL */ `
+  query GetParticularMonthReport($input: GetMonthlyReportInput) {
+    GetParticularMonthReport(input: $input)
   }
 `;

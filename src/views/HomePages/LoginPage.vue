@@ -1,208 +1,183 @@
 <template>
-  <div>
+  <div class="auth-page">
     <Snackbar :SnackBarComponent="SnackBarComponent" />
+
     <v-container class="login-container" fluid>
-      <v-row class="d-flex align-center justify-center" no-gutters>
-        <v-col cols="12" md="7" lg="8">
-          <v-card flat class="d-flex overflow-hidden login-wrapper">
+      <v-row class="full-height d-flex align-center justify-center" no-gutters>
+        <v-col cols="12" md="8" lg="7">
+          <v-card flat class="d-flex overflow-hidde" rounded="xl">
             <v-row>
+              <!-- Branding Side -->
               <v-col
                 v-if="$vuetify.display.mdAndUp"
                 cols="6"
                 class="branding d-flex flex-column align-center justify-center"
               >
-                <div class="circle circle-1"></div>
-                <div class="circle circle-2"></div>
-                <div class="circle circle-3"></div>
-                <v-avatar size="110" class="mb-4" color="white">
-                  <v-icon size="80" color="#425d80">mdi-school</v-icon>
-                </v-avatar>
-                <h2 class="branding-title">Connect. Engage. Thrive.</h2>
-                <p class="branding-subtitle">Your alumni network awaits.</p>
+                <transition name="fade-up" appear>
+                  <div class="text-center">
+                    <v-avatar size="110" class="mb-4 glass-avatar">
+                      <v-icon size="80" color="#fff">mdi-school</v-icon>
+                    </v-avatar>
+                    <h2 class="branding-title">Connect. Engage. Thrive.</h2>
+                    <p class="branding-subtitle">Your alumni network awaits.</p>
+                  </div>
+                </transition>
               </v-col>
 
+              <!-- Form Side -->
               <v-col
                 :cols="$vuetify.display.mdAndUp ? 6 : 12"
-                class="form-section align-center justify-center pa-8"
+                class="form-section d-flex flex-column align-center justify-center pa-8"
               >
-                <v-window v-model="step">
+                <v-window v-model="step" class="w-100">
                   <v-window-item :value="1">
-                    <v-card flat>
-                      <div class="text-center mb-6">
-                        <v-icon size="45" color="#425d80">mdi-school</v-icon>
-                        <h2 class="mt-2">Alumnye</h2>
+                    <transition name="fade-scale" mode="out-in">
+                      <v-card flat class="glass-card pa-6">
+                        <div class="text-center mb-6">
+                          <v-icon size="45" color="primary">mdi-school</v-icon>
+                          <h2 class="mt-2">Alumnye</h2>
+                          <p class="text-grey-darken-1">Welcome Back</p>
+                        </div>
 
-                        <p class="text-grey-darken-1">Welcome Back</p>
-                      </div>
-
-                      <v-form ref="LoginForm" @submit.prevent="validateSignIn">
-                        <v-text-field
-                          v-model="form.email"
-                          label="Email Address *"
-                          type="email"
-                          variant="outlined"
-                          color="primary"
-                          density="comfortable"
-                          required
-                          :rules="[
-                            (v) => !!v || '',
-                            (v) => /.+@.+\..+/.test(v) || 'Email must be Valid',
-                            (v) => !!v || '',
-                          ]"
-                        />
-
-                        <div class="mt-4 pa-0 text-left" v-if="showOTP">
-                          <div>Enter OTP *</div>
-                          <v-otp-input
-                            class="text-left otp-field"
-                            v-model="form.password"
+                        <v-form
+                          ref="LoginForm"
+                          @submit.prevent="validateSignIn"
+                        >
+                          <v-text-field
+                            color="primary"
+                            v-model="form.email"
+                            label="Email Address *"
+                            type="email"
                             variant="outlined"
+                            class="styled-input"
                             density="comfortable"
                             required
+                            :rules="[
+                              (v) => !!v || '',
+                              (v) =>
+                                /.+@.+\..+/.test(v) || 'Email must be valid',
+                            ]"
+                          />
+
+                          <div class="mt-4" v-if="showOTP">
+                            <div class="mb-2">Enter OTP *</div>
+                            <v-otp-input
+                              class="otp-field styled-input"
+                              v-model="form.password"
+                              variant="outlined"
+                              density="comfortable"
+                              required
+                              :rules="[(v) => !!v || '']"
+                            />
+                          </div>
+
+                          <v-btn
+                            type="submit"
+                            size="large"
+                            block
+                            class="my-4 gradient-btn"
+                            :loading="loginLoader"
+                          >
+                            Login
+                          </v-btn>
+
+                          <p class="text-center">
+                            Don't have an account?
+                            <a href="#" @click="signUpClick" class="link"
+                              >Sign Up</a
+                            >
+                          </p>
+                        </v-form>
+                      </v-card>
+                    </transition>
+                  </v-window-item>
+
+                  <!-- Sign Up -->
+                  <v-window-item :value="2">
+                    <transition name="fade-scale" mode="out-in">
+                      <v-card flat class="glass-card pa-6">
+                        <div class="text-center mb-6">
+                          <v-icon size="45" color="primary">mdi-school</v-icon>
+                          <h2 class="mt-2">Alumnye</h2>
+                        </div>
+
+                        <v-form
+                          ref="SignUpForm"
+                          @submit.prevent="validateSignUp"
+                        >
+                          <v-text-field
+                            color="primary"
+                            v-model="SignUP.AlumniName"
+                            label="Alumni Name *"
+                            variant="outlined"
+                            class="styled-input"
+                            density="compact"
                             :rules="[(v) => !!v || '']"
                           />
-                        </div>
-                        <v-btn
-                          type="submit"
-                          size="large"
-                          block
-                          class="my-4 gradient-btn"
-                          :loading="loginLoader"
-                          @click.prevent="validateSignIn"
-                        >
-                          Login
-                        </v-btn>
 
-                        <p class="text-center">
-                          Don't have an account?
-                          <a href="#" @click="signUpClick">Sign Up</a>
-                        </p>
-                      </v-form>
-                    </v-card>
-                  </v-window-item>
-                  <v-window-item :value="2">
-                    <v-card flat class="pa-2">
-                      <div class="text-center mb-6">
-                        <v-icon size="45" color="#425d80">mdi-school</v-icon>
-                        <h2 class="mt-2">Alumnye</h2>
-                      </div>
+                          <v-select
+                            color="primary"
+                            v-model="SignUP.AlumniType"
+                            label="Alumni Type *"
+                            :items="Alumni_Type"
+                            variant="outlined"
+                            class="styled-input"
+                            density="compact"
+                            :rules="[(v) => !!v || '']"
+                          />
 
-                      <v-form ref="SignUpForm" @submit.prevent="validateSignUp">
-                        <v-text-field
-                          v-model="SignUP.AlumniName"
-                          label="Alumni Name *"
-                          type="text"
-                          variant="outlined"
-                          color="primary"
-                          density="compact"
-                          required
-                          :rules="[(v) => !!v || '']"
-                        />
-                        <v-select
-                          v-model="SignUP.AlumniType"
-                          label="Alumni Type *"
-                          type="text"
-                          variant="outlined"
-                          color="primary"
-                          density="compact"
-                          :items="Alumni_Type"
-                          required
-                          :rules="[(v) => !!v || '']"
-                        />
+                          <v-select
+                            color="primary"
+                            density="compact"
+                            variant="outlined"
+                            class="styled-input"
+                            v-model="SignUP.AlumniSize"
+                            label="Alumni Size *"
+                            :items="AlumniSizeArray"
+                          />
 
-                        <!-- <v-text-field
-                          v-model="SignUP.UserName"
-                          label="User Name *"
-                          type="text"
-                          variant="outlined"
-                          color="primary"
-                          density="comfortable"
-                          required
-                          :rules="[(v) => !!v || '']"
-                        /> -->
+                          <v-autocomplete
+                            color="primary"
+                            density="compact"
+                            variant="outlined"
+                            class="styled-input"
+                            v-model="SignUP.StartYear"
+                            label="Start Year *"
+                            :items="Alumni_StartYear"
+                          />
 
-                        <v-select
-                          density="compact"
-                          variant="outlined"
-                          v-model="SignUP.AlumniSize"
-                          label="Alumni Size *"
-                          :items="AlumniSizeArray"
-                        ></v-select>
+                          <v-text-field
+                            color="primary"
+                            v-model="SignUP.Email"
+                            label="Email Address *"
+                            type="email"
+                            variant="outlined"
+                            class="styled-input"
+                            density="compact"
+                            :rules="[
+                              (v) => !!v || '',
+                              (v) =>
+                                /.+@.+\..+/.test(v) || 'Email must be valid',
+                            ]"
+                          />
 
-                        <v-autocomplete
-                          density="compact"
-                          variant="outlined"
-                          v-model="SignUP.StartYear"
-                          label="Start Year *"
-                          :items="Alumni_StartYear"
-                        ></v-autocomplete>
+                          <v-btn
+                            type="submit"
+                            size="large"
+                            block
+                            class="my-4 gradient-btn"
+                            :loading="SignUpLoading"
+                          >
+                            Sign Up
+                          </v-btn>
 
-                        <v-text-field
-                          v-model="SignUP.Email"
-                          label="Email Address *"
-                          type="email"
-                          variant="outlined"
-                          color="primary"
-                          density="compact"
-                          required
-                          :rules="[
-                            (v) => !!v || '',
-                            (v) => /.+@.+\..+/.test(v) || 'Email must be Valid',
-                            (v) => !!v || '',
-                          ]"
-                        />
-
-                        <!-- <div class="text-center mt-n4 font-weight-bold">Or</div>
-                        <v-row>
-                          <v-col cols="3">
-                            <v-autocomplete
-                              v-model="SignUP.Country_Code"
-                              label="Code"
-                              type="text"
-                              :items="countryCodes"
-                              variant="outlined"
-                              color="primary"
-                              density="comfortable"
-                              class="mt-1"
-                            />
-                          </v-col>
-                          <v-col cols="9">
-                            <v-text-field
-                              v-model="SignUP.Contact_Number"
-                              label="Contact Number"
-                              type="Number"
-                              variant="outlined"
-                              color="primary"
-                              density="comfortable"
-                              class="mt-1"
-                              required
-                              :rules="[
-                                (v) =>
-                                  !v ||
-                                  v.length === 10 ||
-                                  'Contact number must be 10 digits',
-                              ]"
-                            />
-                          </v-col>
-                        </v-row> -->
-
-                        <v-btn
-                          type="submit"
-                          size="large"
-                          block
-                          class="mb-4 gradient-btn"
-                          :loading="SignUpLoading"
-                          @click.prevent="validateSignUp"
-                        >
-                          Sign Up
-                        </v-btn>
-
-                        <p class="text-center">
-                          Already have an account?
-                          <a href="#" @click="step = 1">Login</a>
-                        </p>
-                      </v-form>
-                    </v-card>
+                          <p class="text-center">
+                            Already have an account?
+                            <a href="#" @click="step = 1" class="link">Login</a>
+                          </p>
+                        </v-form>
+                      </v-card>
+                    </transition>
                   </v-window-item>
                 </v-window>
               </v-col>
@@ -217,7 +192,7 @@
 <script>
 import axios from "axios";
 import Snackbar from "@/components/Extras/SnackBar.vue";
-import { signIn, confirmSignIn, signOut } from "aws-amplify/auth";
+import { signUp, signIn, confirmSignIn, signOut } from "aws-amplify/auth";
 
 export default {
   components: {
@@ -229,6 +204,7 @@ export default {
       showOTP: false,
       loginLoader: false,
       SignUpLoading: false,
+      StopLoading: false,
       SnackBarComponent: {},
       form: {
         email: "",
@@ -239,12 +215,12 @@ export default {
         AlumniType: "",
         UserName: "",
         Email: "",
-        AlumniSize: 1000,
-        StartYear: 2000,
+        AlumniSize: "1000",
+        StartYear: "2000",
         Country_Code: "+91",
         Contact_Number: "",
       },
-      Alumni_Type: ["School", "University", "Corporate"],
+      Alumni_Type: ["SCHOOL", "UNIVERSITY", "CORPORATE"],
 
       AlumniSizeArray: [100, 1000, 10000, 100000],
 
@@ -310,7 +286,9 @@ export default {
       switch (action) {
         case "SEND_OTP":
           try {
-            this.loginLoader = true;
+            if (this.StopLoading == false) {
+              this.loginLoader = true;
+            }
             this.user = await signIn({
               username: this.form.email.toLowerCase(),
               options: {
@@ -320,7 +298,8 @@ export default {
             console.log("this.user", this.user);
             if (
               this.user.nextStep.signInStep ==
-              "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE"
+                "CONFIRM_SIGN_IN_WITH_CUSTOM_CHALLENGE" &&
+              this.StopLoading == false
             ) {
               this.SnackBarComponent = {
                 SnackbarVmodel: true,
@@ -333,6 +312,7 @@ export default {
               setTimeout(() => {
                 this.showOTP = true;
                 this.loginLoader = false;
+                // this.StopLoading = false;
                 // this.startCountdown();
               }, 1000);
               this.$forceUpdate();
@@ -340,7 +320,9 @@ export default {
           } catch (error) {
             console.log("erro", error);
             if (error.message == "There is already a signed in user.") {
-              this.loginLoader = true;
+              if (this.StopLoading == false) {
+                this.loginLoader = true;
+              }
               await signOut({ global: true });
               this.signInMethod("SEND_OTP");
             } else if (
@@ -356,6 +338,7 @@ export default {
                 SnackbarText: error.message,
               };
             } else {
+              console.log("error", error);
               this.loginLoader = false;
               this.SnackBarComponent = {
                 SnackbarVmodel: true,
@@ -377,7 +360,7 @@ export default {
                   SnackbarColor: "green",
                   SnackbarText: "Login Successfull",
                 };
-                console.log("yes");
+                console.log("yes", this.form.email);
                 this.IsOTPFieldEnabled = false;
                 // this.IsSessionLoggedOut = false;
                 localStorage.setItem("IsLoggedOut", "false");
@@ -485,34 +468,71 @@ export default {
           alumnye_name: this.SignUP.AlumniName,
           alumnye_type: this.SignUP.AlumniType,
           user_email_id: this.SignUP.Email,
-          // user_name: this.SignUP.UserName,
-          // user_country_code: this.SignUP.Contact_Number
-          //   ? this.SignUP.Country_Code
-          //   : undefined,
-          // phone_number: this.SignUP.Contact_Number
-          //   ? this.SignUP.Country_Code + this.SignUP.Contact_Number
-          //   : undefined,
+          alumnye_size: this.SignUP.AlumniSize,
+          alumnye_start_year: this.SignUP.StartYear,
         };
         console.log("inputparams", inputparams);
 
-        const response = await axios.post(
-          "https://v3s5vt5xv3.execute-api.us-east-1.amazonaws.com/Pro/signUp",
-          inputparams,
-          {
-            headers: {
-              "Content-Type": "application/json",
+        let response = await signUp({
+          username: this.SignUP.Email,
+          password: "Alumni@123",
+          options: {
+            userAttributes: {
+              name: this.SignUP.AlumniName,
+              gender: this.SignUP.AlumniType,
+              locale: this.SignUP.AlumniSize,
+              nickname: this.SignUP.StartYear,
             },
-          }
-        );
+          },
+        });
 
         console.log("response", response);
-        if (response.data.status == "Success") {
-          this.$store.commit("SET_USER_MAIL", this.SignUP.Email);
-          this.ActivateMethod();
+        if (response.nextStep.signUpStep == "DONE") {
+          this.StopLoading = true;
+          this.step = 1;
+          this.showOTP = true;
+          this.form.email = this.SignUP.Email;
+          this.SnackBarComponent = {
+            snackbarVmodel: true,
+            snackbarColor: "green",
+            snackbarMessage: "OTP sent to " + this.SignUP.Email,
+          };
+          await this.signInMethod("SEND_OTP");
         }
         this.SignUpLoading = false;
       } catch (error) {
         console.log("error while Signing Up", error);
+        if (error.message == "User already exists") {
+          const response = await axios.post(
+            "https://v3s5vt5xv3.execute-api.us-east-1.amazonaws.com/Pro/signUp",
+            inputparams,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          console.log("response", response);
+          if (response.data.status == "Success") {
+            this.StopLoading = true;
+            this.step = 1;
+            this.showOTP = true;
+            this.form.email = this.SignUP.Email;
+            this.SnackBarComponent = {
+              snackbarVmodel: true,
+              snackbarColor: "green",
+              snackbarMessage: "OTP sent to " + this.SignUP.Email,
+            };
+            await this.signInMethod("SEND_OTP");
+          }
+          this.SignUpLoading = false;
+          // this.StopLoading = true;
+          // this.step = 1;
+          // this.showOTP = true;
+          // this.form.email = this.SignUP.Email;
+          // await this.signInMethod("SEND_OTP");
+        }
         this.SignUpLoading = false;
         this.SnackBarComponent = {
           snackbarVmodel: true,
@@ -522,92 +542,92 @@ export default {
       }
     },
     ActivateMethod() {
-      this.$router.push("/landing-page");
+      // this.$store.commit("SET_USER_MAIL", this.SignUP.Email);
+      setTimeout(() => {
+        this.$router.push("/my-dashboard");
+      }, 1000);
     },
   },
 };
 </script>
 
 <style scoped>
-.login-container {
+.auth-page {
   min-height: 100vh;
+  background: linear-gradient(135deg, #a8b3c5, #c381ec);
+  background-color: black;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f0f4f8;
 }
-
-/* Card Wrapper */
 .login-wrapper {
-  min-height: 570px !important;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
 }
-
-/* Gradient Button */
+.branding {
+  background: linear-gradient(135deg, #4285f4, #6a1b9a);
+  color: white;
+  position: relative;
+}
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(18px);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.glass-avatar {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+}
+.styled-input {
+  border-radius: 12px;
+  /* box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06); */
+  transition: all 0.3s ease;
+}
+.styled-input:deep(.v-field__input) {
+  border-radius: 12px !important;
+}
+.styled-input:deep(.v-field__outline) {
+  border-radius: 12px !important;
+}
+.styled-input:focus-within {
+  /* box-shadow: 0 0 8px rgba(37, 99, 235, 0.5); */
+  transform: translateY(-2px);
+}
 .gradient-btn {
-  background: linear-gradient(90deg, #00c6ff, #007bff);
+  background: linear-gradient(135deg, #4285f4, #6a1b9a);
   color: white !important;
-  font-weight: bold;
-  border-radius: 8px;
-  text-transform: none;
-  transition: 0.3s ease-in-out;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.3s ease;
 }
 .gradient-btn:hover {
-  background: linear-gradient(90deg, #0056b3, #0099cc);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
-/* Left Branding Panel */
-.branding {
-  background: linear-gradient(135deg, #84bbf6, #1b263b);
-  color: white;
-  text-align: center;
-  padding: 40px;
+.link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
 }
-.branding-title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 20px;
+.link:hover {
+  text-decoration: underline;
 }
-.branding-subtitle {
-  font-size: 14px;
-  opacity: 0.8;
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: all 0.6s ease;
 }
-
-/* Right Form Panel */
-.form-section {
-  background: #ffffff;
+.fade-up-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
 }
-/* Circles inside Branding Panel */
-.branding {
-  position: relative; /* needed for absolute circles */
-  overflow: hidden; /* ensures circles don't leak outside */
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.5s ease;
 }
-
-.circle {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2); /* transparent white */
-}
-
-.circle-1 {
-  width: 180px;
-  height: 180px;
-  top: -40px;
-  left: -40px;
-}
-
-.circle-2 {
-  width: 120px;
-  height: 120px;
-  bottom: 20%;
-  right: -40px;
-}
-
-.circle-3 {
-  width: 80px;
-  height: 80px;
-  bottom: -30px;
-  left: 30%;
+.fade-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.95);
 }
 </style>

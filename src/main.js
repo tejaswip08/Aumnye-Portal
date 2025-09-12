@@ -5,6 +5,7 @@ import { loadFonts } from "./plugins/webfontloader";
 import router from "./router";
 import store from "./store";
 import { Amplify } from "aws-amplify";
+import VueGoogleMaps from "@fawmi/vue-google-maps";
 
 loadFonts();
 
@@ -30,15 +31,25 @@ Amplify.configure({
       logger_level: "DEBUG",
     },
   },
-  // Storage: {
-  //   S3: {
-  //     bucket: "dyrectori-mobile",
-  //     region: "ap-south-1",
-  //     logger_level: "DEBUG",
-  //   },
-  // },
+  Storage: {
+    S3: {
+      bucket: "alumnye",
+      region: "us-east-1",
+      logger_level: "DEBUG",
+    },
+  },
 });
 
 const app = createApp(App);
 
-app.use(router).use(store).use(vuetify).mount("#app");
+app
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .use(VueGoogleMaps, {
+    load: {
+      key: "AIzaSyDhmoCen3u5B9_ikCRHJRKwu3sJkritFdQ",
+      libraries: "places",
+    },
+  })
+  .mount("#app");

@@ -48,7 +48,7 @@
           <template v-slot:[`item.user_name`]="{ item }">
             <div class="ma-2" style="position: relative; right: 15px">
               <v-avatar size="40" class="app-bar-avatar text-white">{{
-                item.user_name.slice(0, 2).toUpperCase()
+                item.user_email_id.slice(0, 2).toUpperCase()
               }}</v-avatar>
               <span class="ml-2">{{ item.user_name }}</span>
             </div>
@@ -178,7 +178,7 @@ export default {
   }),
 
   async mounted() {
-    this.tableHeight = window.innerHeight - 260;
+    this.tableHeight = window.innerHeight - 300;
     if (this.$store.getters.get_currentuser_details.user_type == "Admin") {
       console.log("UNDER_ADMIN");
       this.usersHeader.pop();

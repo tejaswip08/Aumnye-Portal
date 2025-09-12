@@ -1,92 +1,52 @@
 <template>
-  <v-container>
-    <v-card class="pa-6" elevation="1" rounded>
-      <h2 class="text-h6 font-weight-bold mb-4">Notification Preferences</h2>
+  <div>
+    <!-- Tabs Header -->
+    <v-tabs v-model="CurrentView" class="custom-tabs" density="compact">
+      <v-tab value="ABOUT_ALUMNI">About Alumni</v-tab>
+      <v-tab value="ALL_ADMIN">All Admins</v-tab>
+    </v-tabs>
 
-      <v-divider class="mb-4" />
+    <!-- Tab Content -->
+    <v-window v-model="CurrentView" class="mt-4">
+      <v-window-item value="ABOUT_ALUMNI">
+        <AboutAlumni />
+      </v-window-item>
 
-      <v-list lines="two" density="comfortable">
-        <v-list-item v-for="(item, index) in preferences" :key="index">
-          <template #prepend>
-            <v-icon class="me-4" color="primary" size="28">
-              {{ item.icon }}
-            </v-icon>
-          </template>
-
-          <v-list-item-title class="text-subtitle-1 font-weight-medium">
-            {{ item.title }}
-          </v-list-item-title>
-
-          <v-list-item-subtitle class="text-body-2 text-grey-darken-1">
-            {{ item.subtitle }}
-          </v-list-item-subtitle>
-
-          <template #append>
-            <v-switch
-              v-model="item.enabled"
-              color="primary"
-              hide-details
-            ></v-switch>
-          </template>
-        </v-list-item>
-      </v-list>
-    </v-card>
-  </v-container>
+      <v-window-item value="ALL_ADMIN">
+        <AllAdmins />
+      </v-window-item>
+    </v-window>
+  </div>
 </template>
 
 <script>
+import AboutAlumni from "@/components/Settings/Cards/AboutAlumni.vue";
+import AllAdmins from "@/components/Settings/Cards/AllAdmins.vue";
+
 export default {
-  name: "NotificationPreferences",
-  data() {
-    return {
-      preferences: [
-        {
-          title: "New Alumni Registration",
-          subtitle: "Get notified when new alumni join the network",
-          icon: "mdi-account-alert-outline",
-          enabled: true,
-        },
-        {
-          title: "Event Registrations",
-          subtitle: "Receive alerts for event sign-ups and cancellations",
-          icon: "mdi-calendar-check-outline",
-          enabled: true,
-        },
-        {
-          title: "Email Campaign Results",
-          subtitle: "Get summaries of email campaign performance",
-          icon: "mdi-email-outline",
-          enabled: false,
-        },
-        {
-          title: "System Updates",
-          subtitle: "Important platform updates and maintenance notices",
-          icon: "mdi-bell-outline",
-          enabled: true,
-        },
-        {
-          title: "Weekly Reports",
-          subtitle: "Automated weekly summary of platform activity",
-          icon: "mdi-chart-box-outline",
-          enabled: true,
-        },
-        {
-          title: "Monthly Analytics",
-          subtitle: "Comprehensive monthly analytics and insights",
-          icon: "mdi-chart-line",
-          enabled: false,
-        },
-      ],
-    };
-  },
+  components: { AboutAlumni, AllAdmins },
+  data: () => ({
+    CurrentView: "ABOUT_ALUMNI",
+  }),
 };
 </script>
 
 <style scoped>
-.v-list-item {
-  border-bottom: 1px solid #eee;
+.custom-tabs {
+  max-width: 400px; /* 🔹 Prevent full screen */
 }
-.v-list-item:last-child {
-  border-bottom: none;
+
+/* Default tab text */
+.custom-tabs .v-tab {
+  font-weight: 600;
+  color: #555; /* normal text color */
+  text-transform: none;
+}
+
+/* Active tab text with bluish gradient */
+.custom-tabs .v-tab.v-tab--selected {
+  background: linear-gradient(90deg, #4facfe, #297e83);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 </style>

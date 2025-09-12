@@ -4,6 +4,11 @@
       :UpdateCurrentUserDialog="UpdateCurrentUserDialog"
       @clicked="InviteMemberDialogEmit"
     />
+    <confirmSwitchDialog
+      :confirmSwitchDialog="confirmSwitchDialog"
+      :StoreObj="StoreObj"
+      @clicked="confirmSwitchEmit"
+    />
     <v-navigation-drawer
       v-model="drawer"
       :permanent="!$vuetify.display.mobile"
@@ -14,7 +19,7 @@
       <div class="d-flex align-center mt-2">
         <div class="d-flex align-center ml-4" v-if="!drawerWidth">
           <div>
-            <!-- <v-img src="@/assets/app-icon.png" :width="40" /> -->
+            <v-img src="@/assets/app-icon.png" :width="40" />
             <!-- </v-btn> -->
           </div>
           <div class="fontsize15px font-weight-one ml-3">Alumnye</div>
@@ -134,7 +139,8 @@
               style="padding: 6px 10px; border-radius: 8px; transition: 0.2s"
             >
               <span>{{
-                $store.getters.get_currentuser_details.alumnye_name
+                $store.getters.get_currentuser_details.alumnnye_details
+                  .alumnye_name
               }}</span>
               <v-icon size="18" class="ml-2">mdi-menu-down</v-icon>
             </div>
@@ -158,12 +164,25 @@
             </div>
 
             <!-- Alumni List -->
-            <v-list density="comfortable" class="pa-2">
+            <div align="center" class="my-4">
+              <v-progress-circular
+                v-if="AlumniList_Bool"
+                indeterminate
+                color="primary"
+                size="50"
+              />
+            </div>
+            <v-list
+              v-if="alumniList && alumniList.length"
+              density="comfortable"
+              class="pa-2"
+            >
               <v-list-item
                 v-for="(alumni, index) in alumniList"
                 :key="index"
                 class="rounded-lg mb-2 CursorPointer hover-list-item"
                 :ripple="false"
+                @click="switchAlumni(alumni)"
               >
                 <!-- Avatar -->
                 <template v-slot:prepend>
@@ -173,7 +192,12 @@
                     color="primary"
                   >
                     <v-icon size="20" color="white">
-                      <template v-if="alumni.alumnye_type === 'Corporate'">
+                      <template
+                        v-if="
+                          alumni.alumnye_type === 'Corporate' ||
+                          alumni.alumnye_type === 'CORPORATE'
+                        "
+                      >
                         mdi-office-building
                       </template>
                       <template
@@ -189,7 +213,6 @@
                   </v-avatar>
                 </template>
 
-                <!-- Info -->
                 <v-list-item-title class="font-weight-medium">
                   {{ alumni.alumnye_name }}
                 </v-list-item-title>
@@ -200,11 +223,20 @@
                 </v-list-item-subtitle>
               </v-list-item>
             </v-list>
+            <div
+              v-if="!alumniList.length && !AlumniList_Bool"
+              class="text-center my-3"
+            >
+              No Alumni Found
+            </div>
           </v-card>
         </v-menu>
 
         <div class="font-size-three grey-font ml-3 mt-n1">
-          {{ $store.getters.get_currentuser_details.user_type }}
+          {{ $store.getters.get_currentuser_details.user_type }} -
+          {{
+            $store.getters.get_currentuser_details.alumnnye_details.alumnye_type
+          }}
         </div>
       </div>
       <v-menu
@@ -220,11 +252,11 @@
             @click="updateProfileDialog"
           >
             <span
-              v-if="$store.getters.get_currentuser_details.user_name"
+              v-if="$store.getters.get_currentuser_details.user_email_id"
               class="text-white"
               size="small"
               >{{
-                $store.getters.get_currentuser_details.user_name
+                $store.getters.get_currentuser_details.user_email_id
                   .slice(0, 2)
                   .toUpperCase()
               }}</span
@@ -309,32 +341,46 @@
 <script>
 import Routers from "@/JSON/Routers.json";
 import { getCurrentUserDetailsfile } from "@/mixins/GetCurrentUserDetails.js";
+import { getAllMyAlumnyes } from "@/mixins/Extras/SwitchAlumni.js";
 import UpdateCurrentUserDialog from "@/components/LandingPage/CurrentUserUpdate.vue";
+import confirmSwitchDialog from "@/components/LandingPage/SwitchAlumniDialog.vue";
+import { SwitchAlumnye } from "@/graphql/mutations.js";
+import { generateClient } from "aws-amplify/api";
+const client = generateClient();
 export default {
-  mixins: [getCurrentUserDetailsfile],
-  components: { UpdateCurrentUserDialog },
+  mixins: [getCurrentUserDetailsfile, getAllMyAlumnyes],
+  components: { UpdateCurrentUserDialog, confirmSwitchDialog },
   data: () => ({
     drawer: true,
     drawerWidth: false,
     SwitchDrawer: false,
     alumniMenu: false,
+    AlumniList_Bool: false,
+    confirmSwitchDialog: false,
+    StoreObj: {},
     menuItems: [],
     SearchAlumni: "",
     openMenus: [],
     SwitchAlumni: [{}],
     menu: false,
-    alumniList: [
-      { alumnye_name: "Mobil80", alumnye_type: "Corporate" },
-      { alumnye_name: "EduLink", alumnye_type: "University" },
-      { alumnye_name: "TechPioneers", alumnye_type: "School" },
-    ],
+    alumniList: [],
     UpdateCurrentUserDialog: false,
   }),
 
+  watch: {
+    async alumniMenu(val) {
+      if (val == true) {
+        this.alumniList = [];
+        this.SwitchDrawer = false;
+        this.alumniList = await this.getAllMyAlumnyesDetailsMethod();
+      }
+    },
+  },
+
   async mounted() {
     this.menuItems = Routers;
-    await this.getCurrentUserDetailsMethod();
-    this.$router.push("/my-dashboard");
+    this.menuItems = await this.getCurrentUserDetailsMethod();
+    // this.$router.push("/my-dashboard");
   },
 
   methods: {
@@ -350,9 +396,45 @@ export default {
         this.$router.push(menuItem.menuPath);
       }
     },
+    async switchAlumni(AlumniId) {
+      this.StoreObj = AlumniId;
+      this.confirmSwitchDialog = true;
+
+      // try {
+      //   let inputParams = {
+      //     current_alumnye_user_id:
+      //       this.$store.getters.get_currentuser_details.user_id,
+      //     current_alumnye_id:
+      //       this.$store.getters.get_currentuser_details.alumnye_id,
+      //     new_alumnye_user_id: AlumniId.user_id,
+      //     new_alumnye_id: AlumniId.alumnye_id,
+      //   };
+      //   const result = await client.graphql({
+      //     query: SwitchAlumnye,
+      //     variables: {
+      //       input: inputParams,
+      //     },
+      //   });
+      //   const response = JSON.parse(result.data.SwitchAlumnye);
+      //   this.getCurrentUserDetailsMethod();
+      //   this.alumniList = await this.getAllMyAlumnyesDetailsMethod();
+
+      //   return response;
+      // } catch (error) {
+      //   console.log("error", error);
+      // }
+    },
     updateProfileDialog() {
       this.menu = false;
       this.UpdateCurrentUserDialog = true;
+    },
+    async confirmSwitchEmit(Toggle) {
+      this.confirmSwitchDialog = false;
+      if (Toggle == 2) {
+        this.$router.push("/my-dashboard");
+        this.menuItems = await this.getCurrentUserDetailsMethod();
+        this.alumniList = await this.getAllMyAlumnyesDetailsMethod();
+      }
     },
 
     InviteMemberDialogEmit() {

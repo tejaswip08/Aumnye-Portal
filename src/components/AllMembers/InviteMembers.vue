@@ -6,7 +6,7 @@
         <v-toolbar color="white">
           <span class="font-weight-one font-size-two ml-4">Invite Member</span>
           <v-spacer />
-          <v-icon size="small" class="mr-4" @click="InviteMemberDialogEmit"
+          <v-icon size="small" class="mr-4" @click="InviteMemberDialogEmit(1)"
             >mdi-close</v-icon
           >
         </v-toolbar>
@@ -193,7 +193,14 @@
                     />
                   </div>
                 </v-col> -->
-                <v-col cols="12" md="6">
+                <v-col
+                  v-if="
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                    'UNIVERSITY'
+                  "
+                  cols="12"
+                  md="6"
+                >
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">Course</label>
                     <v-select
@@ -206,7 +213,14 @@
                     />
                   </div>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  v-if="
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                    'CORPORATE'
+                  "
+                  cols="12"
+                  md="6"
+                >
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">Company</label>
                     <v-text-field
@@ -217,7 +231,14 @@
                     />
                   </div>
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  v-if="
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                    'CORPORATE'
+                  "
+                  cols="12"
+                  md="6"
+                >
                   <div class="field-wrapper">
                     <label class="field-label font-size-three"
                       >Designation</label
@@ -230,16 +251,55 @@
                     />
                   </div>
                 </v-col>
+                <v-col
+                  v-if="
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                    'UNIVERSITY'
+                  "
+                  cols="12"
+                  md="6"
+                >
+                  <div class="field-wrapper">
+                    <label class="field-label font-size-three"
+                      >Department</label
+                    >
+                    <v-text-field
+                      v-model="Department"
+                      variant="outlined"
+                      density="compact"
+                      hide-details
+                    />
+                  </div>
+                </v-col>
+                <v-col
+                  v-if="
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                    'UNIVERSITY'
+                  "
+                  cols="12"
+                  md="6"
+                >
+                  <div class="field-wrapper">
+                    <label class="field-label font-size-three">Hostel</label>
+                    <v-text-field
+                      v-model="Hostel"
+                      variant="outlined"
+                      density="compact"
+                      hide-details
+                    />
+                  </div>
+                </v-col>
                 <v-col cols="12" md="6">
                   <div class="field-wrapper">
                     <label class="field-label font-size-three"
                       >Year of Joining</label
                     >
-                    <v-text-field
+                    <v-autocomplete
                       v-model="memberYearOfJoining"
                       variant="outlined"
                       density="compact"
                       hide-details
+                      :items="Year_Of_Joining"
                     />
                   </div>
                 </v-col>
@@ -285,7 +345,12 @@
                 </div>
               </v-col> -->
               </v-row>
-              <div class="field-wrapper mt-5">
+              <div
+                v-if="
+                  getCurrentInfoObj.alumnnye_details.alumnye_type == 'CORPORATE'
+                "
+                class="field-wrapper mt-5"
+              >
                 <label class="field-label font-size-three">Work Profile</label>
 
                 <v-textarea
@@ -314,7 +379,7 @@
             elevation="0"
             class="font-size-three BtnBorderRadius text-capitalize text-#6a717e card-property"
             dark
-            @click="InviteMemberDialogEmit"
+            @click="InviteMemberDialogEmit(1)"
           >
             Cancel
           </v-btn>
@@ -361,6 +426,8 @@ export default {
     memberDesignation: "",
     memberYearOfLeaving: "",
     memberYearOfJoining: "",
+    Department: "",
+    Hostel: "",
     memberCompany: "",
     memberCourse: "",
     memberGraduationYear: "",
@@ -368,7 +435,7 @@ export default {
     memberUserType: "",
     memberCountry: "",
     memberPhone: "",
-    memberCountryCode: "",
+    memberCountryCode: "+91",
     memberEmail: "",
     memberName: "",
     memberWorkProfile: "",
@@ -397,6 +464,15 @@ export default {
     getCurrentInfoObj: {},
     SnackBarComponent: {},
   }),
+  computed: {
+    Year_Of_Joining() {
+      let years = [];
+      for (let i = 2025; i >= 1900; i--) {
+        years.push(i);
+      }
+      return years;
+    },
+  },
   watch: {
     InviteMemberDialog(val) {
       if (val) {

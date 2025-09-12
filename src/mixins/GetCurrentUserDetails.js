@@ -1,13 +1,17 @@
 import { GetCurrectUserDetails } from "@/graphql/queries.js";
+import Routers from "@/JSON/Routers.json";
 import { generateClient } from "aws-amplify/api";
 const client = generateClient();
 
 export const getCurrentUserDetailsfile = {
-  data: () => ({}),
+  data: () => ({
+    routerList: [],
+  }),
   methods: {
     async getCurrentUserDetailsMethod() {
       try {
         this.overlay = true;
+        this.routerList = Routers;
         let result = await client.graphql({
           query: GetCurrectUserDetails,
           variables: {
@@ -21,15 +25,20 @@ export const getCurrentUserDetailsfile = {
           result.data.GetCurrectUserDetails
         ).data.items;
         console.log("Current User", this.getCurrentUserDetailsObject);
+        if (this.getCurrentUserDetailsObject.user_type == "Member") {
+          this.routerList = this.routerList.filter(
+            (item) =>
+              item.menuName !== "Settings" && item.menuName !== "Approvals"
+          );
+        }
         this.$store.commit(
           "SET_CURRENT_USER",
           this.getCurrentUserDetailsObject
         );
         this.overlay = false;
+        return this.routerList;
       } catch (error) {
         this.overlay = false;
-        console.log("error", error);
-        // this.$router.push("/");
       }
     },
   },

@@ -19,7 +19,6 @@
       </v-row>
     </v-card>
 
-    <!-- Master Settings -->
     <v-card class="pa-6 rounded-lg shadow-lg">
       <h2 class="text-h5 font-weight-bold mb-6">Master Settings</h2>
 
@@ -55,7 +54,7 @@
             </h3>
 
             <!-- Courses Card -->
-            <v-card class="pa-4 mb-4 rounded-lg" variant="outlined">
+            <!-- <v-card class="pa-4 mb-4 rounded-lg">
               <h4 class="text-subtitle-2 font-weight-bold mb-2">
                 <v-icon color="orange" class="mr-1">mdi-book-education</v-icon>
                 Courses
@@ -91,8 +90,10 @@
               </v-chip>
             </v-card>
 
-            <!-- Department Card -->
-            <v-card class="pa-4 mb-4 rounded-lg" variant="outlined">
+            <v-card
+              class="pa-4 mb-4 rounded-lg"
+              style="background: linear-gradient(135deg, #e8f5e9, #ffffff)"
+            >
               <h4 class="text-subtitle-2 font-weight-bold mb-2">
                 <v-icon color="green" class="mr-1">mdi-domain</v-icon>
                 Departments
@@ -128,8 +129,7 @@
               </v-chip>
             </v-card>
 
-            <!-- Hostel Card -->
-            <v-card class="pa-4 mb-4 rounded-lg" variant="outlined">
+            <v-card class="pa-4 mb-4 rounded-lg">
               <h4 class="text-subtitle-2 font-weight-bold mb-2">
                 <v-icon color="teal" class="mr-1">mdi-home-city</v-icon>
                 Hostels
@@ -163,22 +163,159 @@
               >
                 {{ hostel.name }}
               </v-chip>
-            </v-card>
+            </v-card> -->
+            <v-row>
+              <!-- Courses Card -->
+              <v-col cols="12" md="4">
+                <v-card
+                  class="pa-4 mb-4 rounded-lg"
+                  style="background: linear-gradient(135deg, #fff3e0, #ffffff)"
+                >
+                  <h4 class="text-subtitle-2 font-weight-bold mb-2">
+                    <v-icon color="orange" class="mr-1"
+                      >mdi-book-education</v-icon
+                    >
+                    Courses
+                  </h4>
+                  <v-row>
+                    <v-col cols="8">
+                      <v-text-field
+                        v-model="newCourse"
+                        label="Add Course"
+                        variant="outlined"
+                        density="compact"
+                      />
+                    </v-col>
+                    <v-col cols="4" class="d-flex align-center mt-n6">
+                      <v-btn
+                        color="primary"
+                        size="small"
+                        class="text-white"
+                        @click="addCourse"
+                      >
+                        Add
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                  <v-chip
+                    v-for="(course, index) in form.courseMaster"
+                    :key="index"
+                    color="deep-purple"
+                    class="ma-1"
+                    closable
+                    @click:close="deleteCourse(index)"
+                  >
+                    {{ course.name }}
+                  </v-chip>
+                </v-card>
+              </v-col>
+
+              <!-- Departments Card -->
+              <v-col cols="12" md="4">
+                <v-card
+                  class="pa-4 mb-4 rounded-lg"
+                  style="background: linear-gradient(135deg, #e8f5e9, #ffffff)"
+                >
+                  <h4 class="text-subtitle-2 font-weight-bold mb-2">
+                    <v-icon color="green" class="mr-1">mdi-domain</v-icon>
+                    Departments
+                  </h4>
+                  <v-row>
+                    <v-col cols="8">
+                      <v-text-field
+                        v-model="newDepartment"
+                        label="Add Department"
+                        variant="outlined"
+                        density="compact"
+                      />
+                    </v-col>
+                    <v-col cols="4" class="d-flex align-center mt-n6">
+                      <v-btn
+                        color="primary"
+                        size="small"
+                        class="text-white"
+                        @click="addDepartment"
+                      >
+                        Add
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                  <v-chip
+                    v-for="(dept, index) in form.departmentMaster"
+                    :key="index"
+                    color="green-darken-2"
+                    class="ma-1"
+                    closable
+                    @click:close="deleteDepartment(index)"
+                  >
+                    {{ dept.name }}
+                  </v-chip>
+                </v-card>
+              </v-col>
+
+              <!-- Hostels Card -->
+              <v-col cols="12" md="4">
+                <v-card
+                  class="pa-4 mb-4 rounded-lg"
+                  style="background: linear-gradient(135deg, #e0f7fa, #ffffff)"
+                >
+                  <h4 class="text-subtitle-2 font-weight-bold mb-2">
+                    <v-icon color="teal" class="mr-1">mdi-home-city</v-icon>
+                    Hostels
+                  </h4>
+                  <v-row>
+                    <v-col cols="8">
+                      <v-text-field
+                        v-model="newHostel"
+                        label="Add Hostel"
+                        variant="outlined"
+                        density="compact"
+                      />
+                    </v-col>
+                    <v-col cols="4" class="d-flex align-center mt-n6">
+                      <v-btn
+                        size="small"
+                        color="primary"
+                        class="text-white"
+                        @click="addHostel"
+                      >
+                        Add
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                  <v-chip
+                    v-for="(hostel, index) in form.hostelMaster"
+                    :key="index"
+                    color="teal"
+                    class="ma-1"
+                    closable
+                    @click:close="deleteHostel(index)"
+                  >
+                    {{ hostel.name }}
+                  </v-chip>
+                </v-card>
+              </v-col>
+            </v-row>
           </div>
         </v-expand-transition>
 
         <!-- School -->
         <v-expand-transition>
-          <div v-if="alumniType === 'School'" class="mt-4">
+          <div
+            v-if="alumniType === 'School' || alumniType === 'SCHOOL'"
+            class="mt-4"
+          >
             <v-alert type="info" border="start" variant="tonal" color="blue">
               School Alumni have no additional masters to configure.
             </v-alert>
           </div>
         </v-expand-transition>
 
-        <!-- Corporate -->
         <v-expand-transition>
-          <div v-if="alumniType === 'Corporate'" class="mt-4">
+          <div
+            v-if="alumniType === 'Corporate' || alumniType === 'CORPORATE'"
+            class="mt-4"
+          >
             <v-alert type="info" border="start" variant="tonal" color="blue">
               Corporate Alumni have no additional masters to configure.
             </v-alert>

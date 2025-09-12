@@ -18,12 +18,16 @@
                   "
                   class="pa-2"
                 >
-                  <v-icon size="30" color="#9333ea">mdi-message-outline</v-icon>
+                  <v-icon size="30" color="#9333ea"
+                    >mdi-account-multiple-outline</v-icon
+                  >
                 </div>
                 <div class="mt-3">
                   <span class="font-size-four">
                     <span class="font-weight-one"> Members: </span>
-                    <span class="grey-font font-weight-two"> 20 </span>
+                    <span class="grey-font font-weight-two">
+                      {{ totalMembersCount }}
+                    </span>
                   </span>
                 </div>
                 <!-- <div>
@@ -91,7 +95,7 @@
                   class="pa-2"
                 >
                   <v-icon size="30" color="#2563eb"
-                    >mdi-account-multiple-outline</v-icon
+                    >mdi-bullhorn-outline</v-icon
                   >
                 </div>
 
@@ -147,41 +151,10 @@
         </v-row>
       </v-card> -->
       <v-row class="mt-5">
-        <!-- Alumni Growth Card -->
-        <v-col cols="12" md="6">
-          <v-card class="pa-4 card-property" height="480px" elevation="0">
-            <div class="d-flex justify-space-between align-center mb-4">
-              <h3>Alumni Growth</h3>
-              <v-select
-                v-model="selectedRange"
-                :items="ranges"
-                variant="outlined"
-                density="compact"
-                hide-details
-                color="primary"
-                style="max-width: 150px"
-              />
-            </div>
-            <apexchart
-              type="bar"
-              height="250"
-              :options="chartOptions"
-              :series="series"
-            />
-            <div class="text-center mt-4">
-              <h2 class="font-weight-bold">+647</h2>
-              <p class="text-success">New alumni this year</p>
-            </div>
-          </v-card>
-        </v-col>
-
         <v-col cols="12" md="6" class="app-font-style">
-          <v-card class="pa-4 card-property" elevation="0">
-            <!-- Header -->
+          <v-card class="pa-4 card-property app-font-style" elevation="0">
             <div class="d-flex justify-space-between align-center mb-6">
-              <h3 class="font-weight-bold text-h5 d-flex align-center">
-                🎉 Upcoming Events
-              </h3>
+              <h3>🎉 Upcoming Events</h3>
               <v-btn
                 variant="tonal"
                 size="small"
@@ -193,7 +166,6 @@
               </v-btn>
             </div>
 
-            <!-- Event Cards -->
             <v-card
               v-for="(event, i) in events"
               :key="i"
@@ -211,7 +183,7 @@
                 <div class="mb-2">
                   <v-chip
                     size="small"
-                    color="indigo"
+                    color="primary"
                     text-color="white"
                     variant="flat"
                     class="font-weight-medium"
@@ -250,7 +222,87 @@
             </v-card>
           </v-card>
         </v-col>
+        <v-col cols="12" md="6" class="app-font-style">
+          <v-card class="pa-4 card-property app-font-style" elevation="0">
+            <!-- Header -->
+            <div class="d-flex justify-space-between align-center mb-6">
+              <h3>📢 Announcements</h3>
+              <v-btn
+                variant="tonal"
+                size="small"
+                color="primary"
+                class="text-capitalize font-weight-medium"
+              >
+                View All
+                <v-icon size="18" class="ml-1">mdi-arrow-right</v-icon>
+              </v-btn>
+            </div>
+
+            <!-- Announcement Items -->
+            <v-card
+              v-for="(announcement, i) in announcements"
+              :key="i"
+              class="pa-4 mb-4 card-property"
+              elevation="0"
+              variant="outlined"
+            >
+              <div class="font-weight-bold text-body-1 mb-2 text-dark">
+                {{ announcement.title }}
+              </div>
+              <div class="text-grey-darken-2 mb-2">
+                {{ announcement.date }}
+              </div>
+              <div class="text-body-2 text-grey-darken-2">
+                {{ announcement.description }}
+              </div>
+            </v-card>
+          </v-card>
+        </v-col>
+        <!--  -->
       </v-row>
+      <div
+        v-if="
+          getCurrentInfoObj.user_type == 'Owner' ||
+          getCurrentInfoObj.user_type == 'Admin'
+        "
+      >
+        <div v-show="viewMoreSection" class="mt-5">
+          <v-card class="pa-4 card-property" height="480px" elevation="0">
+            <div class="d-flex justify-space-between align-center mb-4">
+              <h3>Alumni Growth</h3>
+              <v-select
+                v-model="selectedRange"
+                :items="ranges"
+                variant="outlined"
+                density="compact"
+                hide-details
+                color="primary"
+                style="max-width: 150px"
+              />
+            </div>
+            <apexchart
+              type="bar"
+              height="250"
+              :options="chartOptions"
+              :series="series"
+            />
+            <div class="text-center mt-4">
+              <h2 class="font-weight-bold">+647</h2>
+              <p class="text-success">New alumni this year</p>
+            </div>
+          </v-card>
+        </div>
+        <div class="mt-3 d-flex justify-end">
+          <v-btn
+            variant="tonal"
+            color="blue"
+            size="small"
+            class="text-capitalize"
+            @click="viewMoreSectionMethod()"
+            >{{ viewMoreSection ? "Hide Section" : "View More" }}
+          </v-btn>
+        </div>
+      </div>
     </v-container>
   </div>
 </template>
@@ -261,6 +313,8 @@ export default {
   components: { apexchart: VueApexCharts },
   data: () => ({
     CreateUserDialog: false,
+    getCurrentInfoObj: {},
+    totalMembersCount: 0,
     QuickActions: [
       {
         text: "Onboard User",
@@ -280,41 +334,27 @@ export default {
         icon: "mdi-email-outline",
         color: "#059669",
       },
-
-      // {
-      //   text: "Create Event",
-      //   subtext: "Schedule new event",
-      //   icon: "mdi-calendar-outline",
-      //   color: "#ea580c",
-      // },
     ],
-    // QuickActions: [
-    //   {
-    //     text: "Add Alumni",
-    //     subtext: "Register new alumni member",
-    //     icon: "mdi-plus",
-    //     color: "#2563eb",
-    //   },
-    //   {
-    //     text: "Send Newsletter",
-    //     subtext: "Create and send communication",
-    //     icon: "mdi-email-outline",
-    //     color: "#059669",
-    //   },
-    //   {
-    //     text: "Generate Report",
-    //     subtext: "Export alumni data",
-    //     icon: "mdi-file",
-    //     color: "#9333ea",
-    //   },
-    //   {
-    //     text: "Create Event",
-    //     subtext: "Schedule new event",
-    //     icon: "mdi-calendar-outline",
-    //     color: "#ea580c",
-    //   },
-    // ],
-
+    announcements: [
+      {
+        title: "New Scholarship Program",
+        date: "Feb 10, 2025",
+        description:
+          "Applications are now open for the Alumni Scholarship Program.",
+      },
+      {
+        title: "Annual General Meeting",
+        date: "Jan 25, 2025",
+        description:
+          "Join us for the AGM where we'll discuss the future plans for our alumni network.",
+      },
+      {
+        title: "Website Update",
+        date: "Dec 15, 2024",
+        description:
+          "Our alumni portal has a new look and more features for better networking.",
+      },
+    ],
     selectedRange: "Last 6 months",
     ranges: ["Last 6 months", "Last 12 months", "Year to Date"],
     series: [
@@ -330,7 +370,7 @@ export default {
       xaxis: {
         categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
       },
-      colors: ["#3f51b5"],
+      colors: ["#2563eb"],
       plotOptions: {
         bar: {
           borderRadius: 6,
@@ -366,6 +406,7 @@ export default {
         statusColor: "green-lighten-4",
       },
     ],
+    viewMoreSection: false,
   }),
 
   mounted() {
@@ -374,9 +415,22 @@ export default {
       this.$store.getters.get_currentuser_details.alumnnye_details
         .active_users_count
     );
+    this.getCurrentInfoObj = this.$store.getters.get_currentuser_details;
+    this.totalMembersCount =
+      (this.getCurrentInfoObj?.alumnnye_details?.active_members_count || 0) +
+      (this.getCurrentInfoObj?.alumnnye_details?.invited_members_count || 0) +
+      (this.getCurrentInfoObj?.alumnnye_details?.pending_members_count || 0) +
+      (this.getCurrentInfoObj?.alumnnye_details?.rejected_members_count || 0);
   },
 
   methods: {
+    viewMoreSectionMethod() {
+      if (this.viewMoreSection) {
+        this.viewMoreSection = false;
+      } else {
+        this.viewMoreSection = true;
+      }
+    },
     routeCardMethod(navigateTo) {
       const obj = {
         value: true,

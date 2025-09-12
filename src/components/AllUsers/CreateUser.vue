@@ -58,7 +58,7 @@
                 </span>
               </v-btn>
             </div> 
-          </div>-->
+          </div> -->
           <v-form ref="alumniForm" class="custom-form">
             <v-container>
               <v-row>
@@ -83,9 +83,11 @@
                       color="primary"
                       type="email"
                       variant="outlined"
+                      rounded="lg"
                       density="compact"
                       hide-details
                       required
+                      class="custom-input"
                     />
                   </div>
                 </v-col>
@@ -140,6 +142,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details
+                      rounded="lg"
                       required
                       color="primary"
                     >
@@ -196,8 +199,7 @@
                       density="compact"
                       hide-details
                       required
-                      
-                    />
+                                         />
                   </div>
                 </v-col> -->
                 <!-- <v-col cols="12" md="6">
@@ -293,9 +295,7 @@
             </v-container>
           </v-form>
         </div>
-
         <!-- <v-divider class="mx-2 mt-2" /> -->
-
         <v-card-actions class="pa-4">
           <v-spacer />
           <v-btn
@@ -311,7 +311,6 @@
           >
             Cancel
           </v-btn>
-
           <v-btn
             :loading="btnLoader"
             width="120"
@@ -397,13 +396,16 @@ export default {
     triggerPfpFileInputMethod() {
       this.$refs.profilePic.$el.querySelector('input[type="file"]').click();
     },
+
     uploadProfilePicMethod() {
       this.triggerPfpFileInputMethod();
     },
+
     imageSelectedMethod() {
       this.selectedImageBlob = URL.createObjectURL(this.profilePicFile);
       console.log("BLOB_IMAGE", this.selectedImageBlob);
     },
+
     async addAlumnyeUserMethod() {
       const isValid = await this.$refs.alumniForm.validate();
       if (isValid.valid) {
@@ -415,7 +417,6 @@ export default {
           user_email_id: this.alumni.email || undefined,
           phone_number:
             `${this.alumni.countryCode}${this.alumni.phone}` || undefined,
-          user_name: this.alumni.UserName,
           user_type: this.alumni.adminRole || undefined,
           profile_picture: undefined,
           current_country: undefined,
@@ -440,6 +441,7 @@ export default {
         };
       }
     },
+
     createUserDialogEmit(Toggle) {
       this.$emit("clicked", Toggle);
     },
@@ -457,26 +459,5 @@ export default {
   font-weight: 500;
   margin-bottom: 1px;
   color: rgb(68, 67, 67);
-}
-.custom-form :deep(.v-field--variant-outlined .v-field__outline) {
-  color: rgba(0, 0, 0, 0.28); /* outline (border) color */
-}
-
-.custom-form :deep(.v-field) {
-  --v-field-border-width: 1px; /* thin by default */
-  border-radius: 10px; /* rounded corners for all fields */
-}
-
-/* ----- hover (optional) ----- */
-.custom-form :deep(.v-field:hover .v-field__outline) {
-  color: rgba(25, 118, 210, 0.55);
-}
-
-/* ----- focused: blue + thicker border ----- */
-.custom-form :deep(.v-field.v-field--focused) {
-  --v-field-border-width: 2px;
-}
-.custom-form :deep(.v-field.v-field--focused .v-field__outline) {
-  color: #1976d2; /* Vuetify primary blue */
 }
 </style>
