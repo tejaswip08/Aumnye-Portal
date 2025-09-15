@@ -66,118 +66,6 @@
                     University Settings
                   </h3>
 
-                  <!-- Courses Card -->
-                  <!-- <v-card class="pa-4 mb-4 rounded-lg">
-              <h4 class="text-subtitle-2 font-weight-bold mb-2">
-                <v-icon color="orange" class="mr-1">mdi-book-education</v-icon>
-                Courses
-              </h4>
-              <v-row>
-                <v-col cols="8">
-                  <v-text-field
-                    v-model="newCourse"
-                    label="Add Course"
-                    variant="outlined"
-                    density="compact"
-                  />
-                </v-col>
-                <v-col cols="4" class="d-flex align-center mt-n6">
-                  <v-btn
-                    color="deep-purple"
-                    class="text-white"
-                    @click="addCourse"
-                  >
-                    Add
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-chip
-                v-for="(course, index) in form.courseMaster"
-                :key="index"
-                color="deep-purple"
-                class="ma-1"
-                closable
-                @click:close="deleteCourse(index)"
-              >
-                {{ course.name }}
-              </v-chip>
-            </v-card>
-
-            <v-card
-              class="pa-4 mb-4 rounded-lg"
-              style="background: linear-gradient(135deg, #e8f5e9, #ffffff)"
-            >
-              <h4 class="text-subtitle-2 font-weight-bold mb-2">
-                <v-icon color="green" class="mr-1">mdi-domain</v-icon>
-                Departments
-              </h4>
-              <v-row>
-                <v-col cols="8">
-                  <v-text-field
-                    v-model="newDepartment"
-                    label="Add Department"
-                    variant="outlined"
-                    density="compact"
-                  />
-                </v-col>
-                <v-col cols="4" class="d-flex align-center mt-n6">
-                  <v-btn
-                    color="green-darken-1"
-                    class="text-white"
-                    @click="addDepartment"
-                  >
-                    Add
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-chip
-                v-for="(dept, index) in form.departmentMaster"
-                :key="index"
-                color="green-darken-2"
-                class="ma-1"
-                closable
-                @click:close="deleteDepartment(index)"
-              >
-                {{ dept.name }}
-              </v-chip>
-            </v-card>
-
-            <v-card class="pa-4 mb-4 rounded-lg">
-              <h4 class="text-subtitle-2 font-weight-bold mb-2">
-                <v-icon color="teal" class="mr-1">mdi-home-city</v-icon>
-                Hostels
-              </h4>
-              <v-row>
-                <v-col cols="8">
-                  <v-text-field
-                    v-model="newHostel"
-                    label="Add Hostel"
-                    variant="outlined"
-                    density="compact"
-                  />
-                </v-col>
-                <v-col cols="4" class="d-flex align-center mt-n6">
-                  <v-btn
-                    color="teal-darken-2"
-                    class="text-white"
-                    @click="addHostel"
-                  >
-                    Add
-                  </v-btn>
-                </v-col>
-              </v-row>
-              <v-chip
-                v-for="(hostel, index) in form.hostelMaster"
-                :key="index"
-                color="teal"
-                class="ma-1"
-                closable
-                @click:close="deleteHostel(index)"
-              >
-                {{ hostel.name }}
-              </v-chip>
-            </v-card> -->
-
                   <v-row>
                     <!-- Courses Card -->
                     <v-col cols="12" md="4">
@@ -361,7 +249,7 @@
                 <v-btn
                   color="primary"
                   class="text-white font-weight-bold"
-                  @click="saveSettings"
+                  @click="addMasterSettingsMethod()"
                 >
                   <v-icon class="mr-1">mdi-content-save-all</v-icon>
                   Save Settings
@@ -376,6 +264,9 @@
 </template>
 
 <script>
+import { CreateMasterSetting } from "@/graphql/mutations.js";
+import { generateClient } from "aws-amplify/api";
+const client = generateClient();
 export default {
   data() {
     return {
@@ -394,7 +285,8 @@ export default {
   },
   computed: {
     alumniName() {
-      return this.$store.getters.get_currentuser_details.alumnye_name;
+      return this.$store.getters.get_currentuser_details.alumnnye_details
+        .alumnye_name;
     },
     alumniType() {
       return this.$store.getters.get_currentuser_details.alumnnye_details
@@ -402,6 +294,29 @@ export default {
     },
   },
   methods: {
+    async addMasterSettingsMethod() {
+      try {
+        let inputparams = {
+          creator_user_id: this.$store.getters.get_currentuser_details.user_id,
+          alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
+          alumnye_universal_settings: {
+            setting_type: "COURSE",
+            setting_list: this.form.courseMaster.map((c) => c.name),
+          },
+        };
+
+        let result = await client.graphql({
+          query: CreateMasterSetting,
+          variables: {
+            input: inputparams,
+          },
+        });
+
+        console.log("result", result);
+      } catch (error) {
+        console.log("error", error);
+      }
+    },
     generateYears() {
       const currentYear = new Date().getFullYear();
       const years = [];
@@ -410,38 +325,78 @@ export default {
       }
       return years;
     },
+
+    // ✅ Add Course
     addCourse() {
-      if (this.newCourse.trim()) {
-        this.form.courseMaster.push({ name: this.newCourse });
-        this.newCourse = "";
+      const value = this.newCourse.trim();
+      if (!value) return;
+
+      // Check duplicates (case-insensitive)
+      const exists = this.form.courseMaster.some(
+        (c) => c.name.toLowerCase() === value.toLowerCase()
+      );
+      if (exists) {
+        alert("Course already exists!");
+        return;
       }
+
+      this.form.courseMaster.push({ name: value });
+      this.form.courseMaster.sort((a, b) =>
+        a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+      );
+      this.newCourse = "";
     },
+
     deleteCourse(index) {
       this.form.courseMaster.splice(index, 1);
     },
+
+    // ✅ Add Department
     addDepartment() {
-      if (this.newDepartment.trim()) {
-        this.form.departmentMaster.push({ name: this.newDepartment });
-        this.newDepartment = "";
+      const value = this.newDepartment.trim();
+      if (!value) return;
+
+      const exists = this.form.departmentMaster.some(
+        (d) => d.name.toLowerCase() === value.toLowerCase()
+      );
+      if (exists) {
+        alert("Department already exists!");
+        return;
       }
+
+      this.form.departmentMaster.push({ name: value });
+      this.form.departmentMaster.sort((a, b) =>
+        a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+      );
+      this.newDepartment = "";
     },
+
     deleteDepartment(index) {
       this.form.departmentMaster.splice(index, 1);
     },
+
+    // ✅ Add Hostel
     addHostel() {
-      if (this.newHostel.trim()) {
-        this.form.hostelMaster.push({ name: this.newHostel });
-        this.newHostel = "";
+      const value = this.newHostel.trim();
+      if (!value) return;
+
+      const exists = this.form.hostelMaster.some(
+        (h) => h.name.toLowerCase() === value.toLowerCase()
+      );
+      if (exists) {
+        alert("Hostel already exists!");
+        return;
       }
+
+      this.form.hostelMaster.push({ name: value });
+      this.form.hostelMaster.sort((a, b) =>
+        a.name.localeCompare(b.name, "en", { sensitivity: "base" })
+      );
+      this.newHostel = "";
     },
+
     deleteHostel(index) {
       this.form.hostelMaster.splice(index, 1);
-    },
-    saveSettings() {
-      if (this.$refs.MasterForm.validate()) {
-        console.log("Saved Master Settings:", this.form);
-        alert("Master settings saved successfully!");
-      }
     },
   },
 };

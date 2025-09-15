@@ -54,7 +54,8 @@
               color="primary"
               class="text-capitalize font-size-three"
               @click="inviteMemberMethod()"
-              >Invite Member
+              >{{ CurrentUserDeatils.user_type == "Member" ? "Invite" : "Add" }}
+              Member
               <span
                 style="display: inline-flex; width: 16px; height: 16px"
                 class="ml-1"

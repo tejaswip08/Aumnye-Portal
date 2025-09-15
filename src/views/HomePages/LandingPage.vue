@@ -173,12 +173,12 @@
               />
             </div>
             <v-list
-              v-if="alumniList && alumniList.length"
+              v-if="sortedAlumniList && sortedAlumniList.length"
               density="comfortable"
               class="pa-2"
             >
               <v-list-item
-                v-for="(alumni, index) in alumniList"
+                v-for="(alumni, index) in sortedAlumniList"
                 :key="index"
                 class="rounded-lg mb-2 CursorPointer hover-list-item"
                 :ripple="false"
@@ -366,6 +366,14 @@ export default {
     alumniList: [],
     UpdateCurrentUserDialog: false,
   }),
+
+  computed: {
+    sortedAlumniList() {
+      return [...this.alumniList].sort((a, b) =>
+        a.alumnye_name?.localeCompare(b.alumnye_name)
+      );
+    },
+  },
 
   watch: {
     async alumniMenu(val) {

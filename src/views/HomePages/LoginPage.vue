@@ -126,7 +126,7 @@
                             :rules="[(v) => !!v || '']"
                           />
 
-                          <v-select
+                          <!-- <v-select
                             color="primary"
                             density="compact"
                             variant="outlined"
@@ -134,7 +134,7 @@
                             v-model="SignUP.AlumniSize"
                             label="Alumni Size *"
                             :items="AlumniSizeArray"
-                          />
+                          /> -->
 
                           <v-autocomplete
                             color="primary"
@@ -222,7 +222,7 @@ export default {
       },
       Alumni_Type: ["SCHOOL", "UNIVERSITY", "CORPORATE"],
 
-      AlumniSizeArray: [100, 1000, 10000, 100000],
+      AlumniSizeArray: ["100", "1000", "10000", "100000"],
 
       rules: {
         required: (v) => !!v || "",
@@ -235,11 +235,9 @@ export default {
   },
   computed: {
     Alumni_StartYear() {
-      let years = [];
-      for (let i = 2025; i >= 1900; i--) {
-        years.push(i);
-      }
-      return years;
+      return Array.from({ length: 2025 - 1900 + 1 }, (_, idx) =>
+        String(2025 - idx)
+      );
     },
   },
 
@@ -468,7 +466,7 @@ export default {
           alumnye_name: this.SignUP.AlumniName,
           alumnye_type: this.SignUP.AlumniType,
           user_email_id: this.SignUP.Email,
-          alumnye_size: this.SignUP.AlumniSize,
+          // alumnye_size: this.SignUP.AlumniSize,
           alumnye_start_year: this.SignUP.StartYear,
         };
         console.log("inputparams", inputparams);
@@ -480,7 +478,7 @@ export default {
             userAttributes: {
               name: this.SignUP.AlumniName,
               gender: this.SignUP.AlumniType,
-              locale: this.SignUP.AlumniSize,
+              // locale: this.SignUP.AlumniSize,
               nickname: this.SignUP.StartYear,
             },
           },

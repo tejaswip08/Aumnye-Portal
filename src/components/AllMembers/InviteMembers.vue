@@ -216,7 +216,9 @@
                 <v-col
                   v-if="
                     getCurrentInfoObj.alumnnye_details.alumnye_type ==
-                    'CORPORATE'
+                      'CORPORATE' ||
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                      'Corporate'
                   "
                   cols="12"
                   md="6"
@@ -234,7 +236,9 @@
                 <v-col
                   v-if="
                     getCurrentInfoObj.alumnnye_details.alumnye_type ==
-                    'CORPORATE'
+                      'CORPORATE' ||
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                      'Corporate'
                   "
                   cols="12"
                   md="6"
@@ -253,8 +257,12 @@
                 </v-col>
                 <v-col
                   v-if="
-                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
-                    'UNIVERSITY'
+                    getCurrentInfoObj &&
+                    getCurrentInfoObj.alumnnye_details &&
+                    (getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                      'UNIVERSITY' ||
+                      getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                        'University')
                   "
                   cols="12"
                   md="6"
@@ -263,26 +271,33 @@
                     <label class="field-label font-size-three"
                       >Department</label
                     >
-                    <v-text-field
+                    <v-select
                       v-model="Department"
+                      :items="departmentOptions"
                       variant="outlined"
                       density="compact"
                       hide-details
                     />
                   </div>
                 </v-col>
+
                 <v-col
                   v-if="
-                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
-                    'UNIVERSITY'
+                    getCurrentInfoObj &&
+                    getCurrentInfoObj.alumnnye_details &&
+                    (getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                      'UNIVERSITY' ||
+                      getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                        'University')
                   "
                   cols="12"
                   md="6"
                 >
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">Hostel</label>
-                    <v-text-field
+                    <v-select
                       v-model="Hostel"
+                      :items="hostelOptions"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -455,6 +470,20 @@ export default {
       "LLB",
       "MBBS",
       "BPharm",
+    ],
+    departmentOptions: [
+      "Computer Science",
+      "Mechanical Engineering",
+      "Electrical Engineering",
+      "Civil Engineering",
+      "Business Administration",
+    ],
+    hostelOptions: [
+      "Hostel A",
+      "Hostel B",
+      "Hostel C",
+      "Girls Hostel",
+      "Boys Hostel",
     ],
     selectedImageBlob: "",
     profilePicFile: {},

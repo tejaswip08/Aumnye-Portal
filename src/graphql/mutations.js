@@ -60,3 +60,13 @@ export const ApproveOrRejectPendingMember = /* GraphQL */ `
     ApproveOrRejectPendingMember(input: $input)
   }
 `;
+export const CreateMasterSetting = /* GraphQL */ `
+  mutation CreateMasterSetting($input: CreateMasterSettingInput) {
+    CreateMasterSetting(input: $input)
+  }
+`;
+export const ListMasterSettings = /* GraphQL */ `
+  mutation ListMasterSettings($input: ListMasterSettingsInput) {
+    ListMasterSettings(input: $input)
+  }
+`;

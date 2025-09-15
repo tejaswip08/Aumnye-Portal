@@ -567,10 +567,12 @@ export default {
           ...this.$store.getters.get_currentuser_details,
         };
         this.memberCountryCode = this.getCurrentInfoObj.user_country_code;
-        this.memberCountry = Country.getCountryByCode(this.memberCountryCode);
+        this.memberCountry = Country.getCountryByCode(
+          this.getCurrentInfoObj.current_country
+        );
         this.memberEmail = this.getCurrentInfoObj.user_email_id;
         this.memberName = this.getCurrentInfoObj.user_name;
-        this.memberPhone = this.getCurrentInfoObj.user_phone_number;
+        this.memberPhone = this.getCurrentInfoObj.phone_number;
         this.memberCompany =
           this.getCurrentInfoObj &&
           this.getCurrentInfoObj.alumnnye_details &&
