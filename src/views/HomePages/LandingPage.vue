@@ -135,10 +135,10 @@
           <template v-slot:activator="{ props }">
             <div
               v-bind="props"
-              class="font-size-two font-weight-one text-primary CursorPointer d-flex align-center"
+              class="font-size-two font-weight-one text-primary CursorPointer"
               style="padding: 6px 10px; border-radius: 8px; transition: 0.2s"
             >
-              <span>{{
+              <span class="text-right">{{
                 $store.getters.get_currentuser_details.alumnnye_details
                   .alumnye_name
               }}</span>
@@ -445,8 +445,11 @@ export default {
       }
     },
 
-    InviteMemberDialogEmit() {
+    InviteMemberDialogEmit(Toggle) {
       this.UpdateCurrentUserDialog = false;
+      if (Toggle == 2) {
+        this.getCurrentUserDetailsMethod();
+      }
     },
     logoutMethod() {
       $router.push("/");

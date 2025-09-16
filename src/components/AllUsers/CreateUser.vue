@@ -1,7 +1,7 @@
 <template>
   <div>
     <Snackbar :SnackBarComponent="SnackBarComponent" />
-    <v-dialog persistent width="700" :model-value="CreateUserDialog">
+    <v-dialog persistent width="500" :model-value="CreateUserDialog">
       <v-card class="CardBorderRadius app-font-style">
         <v-toolbar color="white">
           <span class="font-weight-one font-size-two ml-4"
@@ -78,7 +78,7 @@
                     />
                   </div>
                 </v-col> -->
-                <v-col cols="12" md="6">
+                <v-col cols="12">
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">Email</label>
                     <v-text-field
@@ -140,37 +140,39 @@
                     />
                   </div>
                 </v-col> -->
-                <v-col cols="12" md="6">
+                <!-- <v-col cols="12" md="6">
                   <div class="field-wrapper">
-                    <label class="field-label font-size-three">Role</label>
-                    <v-select
-                      v-model="alumni.adminRole"
-                      :items="adminRoleItems"
-                      multiple
-                      item-title="text"
-                      item-value="value"
-                      variant="outlined"
-                      density="compact"
-                      hide-details
-                      rounded="lg"
-                      required
-                      color="primary"
-                    >
-                      <template v-slot:selection="{ item, index }">
-                        <span v-if="index === 0">
-                          {{ item.title }}
-                        </span>
+                    <label class="field-label font-size-three mb-2">Role</label>
 
-                        <span
-                          v-else-if="index === 1 && alumni.adminRole.length > 1"
-                          class="grey--text text-caption"
-                        >
-                          (+{{ alumni.adminRole.length - 1 }} others)
-                        </span>
-                      </template>
-                    </v-select>
+                    <v-card class="pa-3 rounded-lg">
+                      <v-checkbox-group
+                        v-model="alumni.adminRole"
+                        multiple
+                        color="primary"
+                        density="comfortable"
+                      >
+                        <v-row>
+                          <v-col
+                            v-for="role in adminRoleItems"
+                            :key="role.value"
+                            cols="12"
+                            sm="6"
+                          >
+                            <v-checkbox
+                              :label="role.text"
+                              :value="role.value"
+                              hide-details
+                              density="compact"
+                              color="primary"
+                              class="rounded-md"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-checkbox-group>
+                    </v-card>
                   </div>
-                </v-col>
+                </v-col> -->
+
                 <!-- <v-col cols="12" md="6">
                   <div class="field-wrapper">
                     <label class="field-label font-size-three"
@@ -306,6 +308,29 @@
                 </div>
               </v-col> -->
               </v-row>
+              <div class="field-wrapper mt-5">
+                <label class="field-label font-size-three">Role</label>
+
+                <v-card class="pa-3 elevation-0">
+                  <v-checkbox-group
+                    v-model="alumni.adminRole"
+                    multiple
+                    color="primary"
+                    density="comfortable"
+                  >
+                    <v-checkbox
+                      v-for="role in adminRoleItems"
+                      :key="role.value"
+                      :label="role.text"
+                      :value="role.value"
+                      hide-details
+                      density="compact"
+                      color="primary"
+                      class="mb-2"
+                    />
+                  </v-checkbox-group>
+                </v-card>
+              </div>
             </v-container>
           </v-form>
         </div>
@@ -414,19 +439,16 @@ export default {
     adminRoleItems: [
       {
         text: "Member Management",
-        value: "Member Management",
+        value: "Member_Management",
       },
       {
         text: "Event Management",
-        value: "Event Management",
+        value: "Event_Management",
       },
       {
         text: "Broadcast Management",
-        value: "Broadcast Management",
+        value: "Broadcast_Management",
       },
-      // "Member Management",
-      // "Event Management",
-      // "Broadcast Management",
     ],
     countryCodeList: [],
     btnLoader: false,
@@ -515,7 +537,7 @@ export default {
           alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
           user_email_id: this.alumni.user_email_id,
           user_id: this.StoreObj.user_id,
-          user_type: [...this.alumni.adminRole],
+          user_type: "Admin",
         };
         let result = await client.graphql({
           query: UpdateAlumnyeUser,
@@ -535,7 +557,6 @@ export default {
         this.btnLoader = false;
       } catch (error) {
         this.btnLoader = false;
-
         console.log(error);
       }
     },

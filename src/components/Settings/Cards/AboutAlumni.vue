@@ -64,6 +64,20 @@
           </v-col>
         </v-row>
 
+        <div class="d-flex gap-3 align-center">
+          <span>Do member profile changes need admin approval? : </span>
+          <v-radio-group
+            v-model="RadioStatus"
+            inline
+            color="primary"
+            density="compact"
+            class="mt-6 ml-3"
+          >
+            <v-radio label="Yes" value="YES"></v-radio>
+            <v-radio label="No" value="NO"></v-radio>
+          </v-radio-group>
+        </div>
+
         <!-- University Masters -->
         <v-expand-transition>
           <div
@@ -274,6 +288,7 @@ export default {
   data() {
     return {
       loading: false,
+      RadioStatus: "YES",
       UpdateAlumniDialog: false,
       SnackBarComponent: {},
       form: {

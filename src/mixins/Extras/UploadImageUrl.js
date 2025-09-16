@@ -1,4 +1,4 @@
-import { uploadData } from "aws-amplify/storage";
+import { uploadData, getUrl } from "aws-amplify/storage";
 
 export const CommonUploadFile = {
   data: () => ({}),
@@ -17,6 +17,20 @@ export const CommonUploadFile = {
           url: key,
           file: file,
         };
+      } catch (error) {
+        console.log("Err", error);
+      }
+    },
+    async GetImageFromS3Method(file_key) {
+      try {
+        console.log("Type", typeof file_key);
+        const result = await getUrl({
+          path: file_key,
+          options: {
+            bucket: "alumnye",
+          },
+        });
+        return result;
       } catch (error) {
         console.log("Err", error);
       }

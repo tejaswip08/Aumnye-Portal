@@ -80,3 +80,8 @@ export const UpdateAlumne = /* GraphQL */ `
     UpdateAlumne(input: $input)
   }
 `;
+export const UpdateAccessControlForUser = /* GraphQL */ `
+  mutation UpdateAccessControlForUser($input: UpdateAccessControlForUserInput) {
+    UpdateAccessControlForUser(input: $input)
+  }
+`;

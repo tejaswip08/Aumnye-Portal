@@ -115,7 +115,7 @@
                       >Country Code</label
                     >
                     <v-autocomplete
-                      v-model="getCurrentInfoObj.user_country_code"
+                      v-model="memberCountryCode"
                       :items="countryCodeList"
                       item-title="dial_code"
                       item-value="dial_code"
@@ -176,7 +176,6 @@
                   </div>
                 </v-col>
 
-                <!-- State -->
                 <v-col cols="12" md="6">
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">State</label>
@@ -551,9 +550,16 @@ export default {
     },
   },
   watch: {
-    UpdateCurrentUserDialog(val) {
+    async UpdateCurrentUserDialog(val) {
       if (val == true) {
         this.listMasterSettingsMethod();
+
+        if (this.$store.getters.get_currentuser_details.profile_picture) {
+          this.img = `https://alumnye.s3.us-east-1.amazonaws.com/${this.$store.getters.get_currentuser_details.profile_picture}`;
+        }
+        // this.img = await this.GetImageFromS3Method(
+        //   this.$store.getters.get_currentuser_details.profile_picture
+        // );
 
         this.countryCodeList = ContryCodes;
         this.countries = Country.getAllCountries();
@@ -581,7 +587,7 @@ export default {
     memberCountry(newVal) {
       console.log("memberCountry", newVal);
       if (newVal) {
-        this.states = State.getStatesOfCountry("IN");
+        this.states = State.getStatesOfCountry(newVal.isoCode);
         // this.memberState = null;
       } else {
         this.states = [];
@@ -626,7 +632,7 @@ export default {
           user_country_code: this.memberCountryCode || undefined,
           phone_number:
             this.memberPhone && this.memberCountryCode
-              ? `${this.memberCountryCode}${this.memberPhone}`
+              ? `${this.memberPhone}`
               : undefined,
           user_name: this.memberName || undefined,
           user_type: this.memberUserType || undefined,
@@ -678,6 +684,7 @@ export default {
     },
 
     InviteMemberDialogEmit(Toggle) {
+      this.img = null;
       this.$refs.alumniForm.reset();
       this.$emit("clicked", Toggle);
     },
