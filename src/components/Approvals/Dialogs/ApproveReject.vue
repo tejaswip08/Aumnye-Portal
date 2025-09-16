@@ -70,6 +70,7 @@ export default {
   data: () => ({
     btnLoader: false,
     comment: "",
+    loader: false,
     SnackBarComponent: {},
   }),
 
