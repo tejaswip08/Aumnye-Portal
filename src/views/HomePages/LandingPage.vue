@@ -131,7 +131,6 @@
           min-width="260"
           location="bottom"
         >
-          <!-- Activator -->
           <template v-slot:activator="{ props }">
             <div
               v-bind="props"
