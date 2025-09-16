@@ -8,7 +8,7 @@
     />
     <v-card elevation="0" class="card-property">
       <v-card-text>
-        <div class="d-flex justify-end mb-6">
+        <!-- <div class="d-flex justify-end mb-6">
           <div>
             <v-text-field
               v-model="search"
@@ -23,11 +23,22 @@
               prepend-inner-icon="mdi-magnify"
             />
           </div>
-        </div>
+        </div> -->
         <v-data-table
           fixed-header
           density="compact"
-          :headers="membersHeader"
+          :headers="
+            CurrentUserDeatils.alumnnye_details &&
+            (CurrentUserDeatils.alumnnye_details.alumnye_type == 'UNIVERSITY' ||
+              CurrentUserDeatils.alumnnye_details.alumnye_type ==
+                'University' ||
+              CurrentUserDeatils.alumnnye_details.alumnye_type == 'SCHOOL')
+              ? membersHeader.filter(
+                  (item) =>
+                    item.value != 'company' && item.value != 'designation'
+                )
+              : membersHeader
+          "
           :items="membersItems"
           :loading="tableLoading"
           :height="tableHeight"
@@ -129,6 +140,7 @@ export default {
     ApproveRejectMember,
   },
   data: () => ({
+    CurrentUserDeatils: {},
     page: 1,
     pageCount: 1,
     search: "",
@@ -194,6 +206,9 @@ export default {
 
   async mounted() {
     this.tableHeight = window.innerHeight - 260;
+    this.CurrentUserDeatils = {
+      ...this.$store.getters.get_currentuser_details,
+    };
     this.membersItems = await this.listPendingMembersDataMethod();
   },
 

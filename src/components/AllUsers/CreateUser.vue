@@ -5,7 +5,10 @@
       <v-card class="CardBorderRadius app-font-style">
         <v-toolbar color="white">
           <span class="font-weight-one font-size-two ml-4"
-            >Add Administrator</span
+            >{{
+              StoreObj.action == "EDIT" ? "Update" : "Add"
+            }}
+            Administrator</span
           >
           <v-spacer />
           <v-icon size="small" class="mr-4" @click="createUserDialogEmit"
@@ -79,8 +82,9 @@
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">Email</label>
                     <v-text-field
-                      v-model="alumni.email"
+                      v-model="alumni.user_email_id"
                       color="primary"
+                      :disabled="StoreObj.action == 'EDIT'"
                       type="email"
                       variant="outlined"
                       rounded="lg"
@@ -88,6 +92,10 @@
                       hide-details
                       required
                       class="custom-input"
+                      :rules="[
+                        (v) => !!v || '',
+                        (v) => /.+@.+\..+/.test(v) || 'Email must be valid',
+                      ]"
                     />
                   </div>
                 </v-col>
@@ -139,6 +147,8 @@
                       v-model="alumni.adminRole"
                       :items="adminRoleItems"
                       multiple
+                      item-title="text"
+                      item-value="value"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -147,8 +157,12 @@
                       color="primary"
                     >
                       <template v-slot:selection="{ item, index }">
+                        <span v-if="index === 0">
+                          {{ item.title }}
+                        </span>
+
                         <span
-                          v-if="index === 0 && alumni.adminRole.length > 1"
+                          v-else-if="index === 1 && alumni.adminRole.length > 1"
                           class="grey--text text-caption"
                         >
                           (+{{ alumni.adminRole.length - 1 }} others)
@@ -312,6 +326,7 @@
             Cancel
           </v-btn>
           <v-btn
+            v-if="StoreObj.action != 'EDIT'"
             :loading="btnLoader"
             width="120"
             height="40"
@@ -324,6 +339,22 @@
             @click="addAlumnyeUserMethod()"
           >
             Add
+          </v-btn>
+
+          <v-btn
+            v-if="StoreObj.action == 'EDIT'"
+            :loading="btnLoader"
+            width="120"
+            height="40"
+            variant="elevated"
+            elevation="0"
+            size="large"
+            color="primary"
+            class="font-size-three BtnBorderRadius mr-3 text-capitalize text-black"
+            dark
+            @click="validateUpdateMethod()"
+          >
+            Update
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -338,10 +369,14 @@ import ContryCodes from "@/JSON/CountryDialCode.json";
 import Snackbar from "@/components/Extras/SnackBar.vue";
 
 import { createAlumnyeUser } from "@/mixins/Users/CreateAlumnyeUser.js";
+import { UpdateAlumnyeUser } from "@/graphql/mutations.js";
+import { generateClient } from "aws-amplify/api";
+const client = generateClient();
 export default {
   mixins: [createAlumnyeUser],
   props: {
     CreateUserDialog: Boolean,
+    StoreObj: Object,
   },
   components: {
     TrashIcon,
@@ -350,14 +385,14 @@ export default {
   data: () => ({
     alumni: {
       UserName: "",
-      email: "",
+      user_email_id: "",
       phone: "",
       country: "",
       graduationYear: "",
       department: "",
       company: "",
       linkedin: "",
-      adminRole: "",
+      adminRole: [],
       alumniType: "",
       countryCode: "",
       yearOfJoining: "",
@@ -377,9 +412,21 @@ export default {
       "Arts",
     ],
     adminRoleItems: [
-      "Member Management",
-      "Event Management",
-      "Broadcast Management",
+      {
+        text: "Member Management",
+        value: "Member Management",
+      },
+      {
+        text: "Event Management",
+        value: "Event Management",
+      },
+      {
+        text: "Broadcast Management",
+        value: "Broadcast Management",
+      },
+      // "Member Management",
+      // "Event Management",
+      // "Broadcast Management",
     ],
     countryCodeList: [],
     btnLoader: false,
@@ -387,8 +434,13 @@ export default {
   }),
   watch: {
     CreateUserDialog(val) {
-      if (val) {
+      if (val == true) {
         this.countryCodeList = ContryCodes;
+
+        if (this.StoreObj.action == "EDIT") {
+          console.log("STORE_OBJ", this.StoreObj);
+          this.alumni = { ...this.StoreObj };
+        }
       }
     },
   },
@@ -414,7 +466,7 @@ export default {
         const inputParams = {
           alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
           creator_user_id: this.$store.getters.get_currentuser_details.user_id,
-          user_email_id: this.alumni.email || undefined,
+          user_email_id: this.alumni.user_email_id || undefined,
           phone_number:
             `${this.alumni.countryCode}${this.alumni.phone}` || undefined,
           user_type: this.alumni.adminRole || undefined,
@@ -425,9 +477,9 @@ export default {
         const response = await this.createAlumnyeUserMethod(inputParams);
         if (response.status == "Success") {
           this.SnackBarComponent = {
-            snackbarVmodel: true,
-            snackbarColor: "green",
-            snackbarMessage: response.status_message,
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: response.status_message,
           };
           this.createUserDialogEmit(2);
           this.btnLoader = false;
@@ -435,14 +487,61 @@ export default {
       } else {
         console.log("NOT_VALIDATED");
         this.SnackBarComponent = {
-          snackbarVmodel: true,
-          snackbarColor: "red",
-          snackbarMessage: "Kindly fill the required details..!",
+          SnackbarVmodel: true,
+          SnackbarColor: "red",
+          SnackbarText: "Kindly fill the required details..!",
         };
       }
     },
 
+    validateUpdateMethod() {
+      const isValid = this.$refs.alumniForm.validate();
+      if (isValid.valid) {
+        this.updateAdminsMethod();
+      } else {
+        this.SnackBarComponent = {
+          SnackbarVmodel: true,
+          SnackbarColor: "red",
+          SnackbarText: "Fill the required details..!",
+        };
+      }
+    },
+
+    async updateAdminsMethod() {
+      try {
+        this.btnLoader = true;
+        let inputparams = {
+          updater_user_id: this.$store.getters.get_currentuser_details.user_id,
+          alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
+          user_email_id: this.alumni.user_email_id,
+          user_id: this.StoreObj.user_id,
+          user_type: [...this.alumni.adminRole],
+        };
+        let result = await client.graphql({
+          query: UpdateAlumnyeUser,
+          variables: {
+            input: inputparams,
+          },
+        });
+        let ResultObj = JSON.parse(result.data.UpdateAlumnyeUser);
+        if (ResultObj.status == "Success") {
+          this.SnackBarComponent = {
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: ResultObj.Status_Message,
+          };
+          this.createUserDialogEmit(2);
+        }
+        this.btnLoader = false;
+      } catch (error) {
+        this.btnLoader = false;
+
+        console.log(error);
+      }
+    },
+
     createUserDialogEmit(Toggle) {
+      this.$refs.alumniForm.reset();
       this.$emit("clicked", Toggle);
     },
   },

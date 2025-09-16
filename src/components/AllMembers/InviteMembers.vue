@@ -4,7 +4,16 @@
     <v-dialog persistent width="700" :model-value="InviteMemberDialog">
       <v-card class="CardBorderRadius app-font-style">
         <v-toolbar color="white">
-          <span class="font-weight-one font-size-two ml-4">Invite Member</span>
+          <span class="font-weight-one font-size-two ml-4"
+            >{{
+              StoreObj.action == "EDIT"
+                ? "Update"
+                : getCurrentInfoObj.user_type == "Member"
+                ? "Invite"
+                : "Add"
+            }}
+            Member</span
+          >
           <v-spacer />
           <v-icon size="small" class="mr-4" @click="InviteMemberDialogEmit(1)"
             >mdi-close</v-icon
@@ -85,6 +94,10 @@
                       density="compact"
                       hide-details
                       required
+                      :rules="[
+                        (v) => !!v || '',
+                        (v) => /.+@.+\..+/.test(v) || 'Email must be valid',
+                      ]"
                     />
                   </div>
                 </v-col>
@@ -196,7 +209,9 @@
                 <v-col
                   v-if="
                     getCurrentInfoObj.alumnnye_details.alumnye_type ==
-                    'UNIVERSITY'
+                      'UNIVERSITY' ||
+                    getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                      'University'
                   "
                   cols="12"
                   md="6"
@@ -205,7 +220,7 @@
                     <label class="field-label font-size-three">Course</label>
                     <v-select
                       v-model="memberCourse"
-                      :items="memberCourseItems"
+                      :items="courseMaster"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -273,7 +288,7 @@
                     >
                     <v-select
                       v-model="Department"
-                      :items="departmentOptions"
+                      :items="departmentMaster"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -297,7 +312,7 @@
                     <label class="field-label font-size-three">Hostel</label>
                     <v-select
                       v-model="Hostel"
-                      :items="hostelOptions"
+                      :items="hostelMaster"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -314,7 +329,7 @@
                       variant="outlined"
                       density="compact"
                       hide-details
-                      :items="Year_Of_Joining"
+                      :items="Alumni_StartYear"
                     />
                   </div>
                 </v-col>
@@ -362,7 +377,9 @@
               </v-row>
               <div
                 v-if="
-                  getCurrentInfoObj.alumnnye_details.alumnye_type == 'CORPORATE'
+                  getCurrentInfoObj.alumnnye_details.alumnye_type ==
+                    'CORPORATE' ||
+                  getCurrentInfoObj.alumnnye_details.alumnye_type == 'Corporate'
                 "
                 class="field-wrapper mt-5"
               >
@@ -400,6 +417,7 @@
           </v-btn>
 
           <v-btn
+            v-if="StoreObj.action != 'EDIT'"
             :loading="btnLoader"
             width="120"
             height="40"
@@ -411,8 +429,22 @@
             dark
             @click="inviteMemberMethod()"
           >
-            Invite
+            {{ getCurrentInfoObj.user_type == "Member" ? "Invite" : "Add" }}
           </v-btn>
+          <v-btn
+            v-if="StoreObj.action == 'EDIT'"
+            :loading="btnLoader"
+            width="120"
+            height="40"
+            variant="elevated"
+            elevation="0"
+            size="large"
+            color="primary"
+            class="font-size-three BtnBorderRadius mr-3 text-capitalize text-black"
+            dark
+            @click.stop="updateMemberMethod()"
+            >Update</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -426,10 +458,15 @@ import ContryCodes from "@/JSON/CountryDialCode.json";
 import Snackbar from "@/components/Extras/SnackBar.vue";
 
 import { createMember } from "@/mixins/Members/CreateMembers.js";
+import { ListMasterSettingsData } from "@/mixins/Settings/MasterSettings.js";
+import { UpdateMember } from "@/graphql/mutations.js";
+import { generateClient } from "aws-amplify/api";
+const client = generateClient();
 export default {
-  mixins: [createMember],
+  mixins: [createMember, ListMasterSettingsData],
   props: {
     InviteMemberDialog: Boolean,
+    StoreObj: Object,
   },
   components: {
     TrashIcon,
@@ -440,7 +477,7 @@ export default {
     memberCourse: "",
     memberDesignation: "",
     memberYearOfLeaving: "",
-    memberYearOfJoining: "",
+    memberYearOfJoining: "2020",
     Department: "",
     Hostel: "",
     memberCompany: "",
@@ -456,35 +493,11 @@ export default {
     memberWorkProfile: "",
     memberUserTypeItems: [],
     memberAlumnyeTypeItems: [],
-    memberCourseItems: [],
     memberRoles: [],
     memberUserTypeItems: ["Admin", "Alumni Coordinator", "Event Manager"],
-    memberCourseItems: [
-      "BE",
-      "BTech",
-      "BSc",
-      "BCom",
-      "BA",
-      "BBA",
-      "BCA",
-      "LLB",
-      "MBBS",
-      "BPharm",
-    ],
-    departmentOptions: [
-      "Computer Science",
-      "Mechanical Engineering",
-      "Electrical Engineering",
-      "Civil Engineering",
-      "Business Administration",
-    ],
-    hostelOptions: [
-      "Hostel A",
-      "Hostel B",
-      "Hostel C",
-      "Girls Hostel",
-      "Boys Hostel",
-    ],
+    courseMaster: [],
+    departmentMaster: [],
+    hostelMaster: [],
     selectedImageBlob: "",
     profilePicFile: {},
     years: Array.from({ length: 30 }, (_, i) => 2025 - i),
@@ -494,20 +507,36 @@ export default {
     SnackBarComponent: {},
   }),
   computed: {
-    Year_Of_Joining() {
-      let years = [];
-      for (let i = 2025; i >= 1900; i--) {
-        years.push(i);
-      }
-      return years;
+    Alumni_StartYear() {
+      return Array.from({ length: 2025 - 1900 + 1 }, (_, idx) =>
+        String(2025 - idx)
+      );
     },
   },
   watch: {
     InviteMemberDialog(val) {
-      if (val) {
+      if (val == true) {
         this.countryCodeList = ContryCodes;
         this.getCurrentInfoObj = this.$store.getters.get_currentuser_details;
         console.log("CREATE_MEMBER_WATCHER", this.getCurrentInfoObj);
+        this.listMasterSettingsMethod();
+
+        if (this.StoreObj.action == "EDIT") {
+          console.log("STORE_OBJ", this.StoreObj);
+          this.memberName = this.StoreObj.user_name;
+          this.memberEmail = this.StoreObj.user_email_id;
+          this.memberCountryCode = this.StoreObj.user_country_code;
+          this.memberPhone = this.StoreObj.user_phone_number;
+          this.memberUserType = this.StoreObj.user_type;
+          this.memberWorkProfile = this.StoreObj.work_profile;
+          this.memberYearOfJoining = this.StoreObj.year_of_joining;
+          this.memberYearOfLeaving = this.StoreObj.year_of_leaving;
+          this.memberDesignation = this.StoreObj.designation;
+          this.memberCompany = this.StoreObj.company;
+          this.memberCourse = this.StoreObj.course;
+          this.Department = this.StoreObj.department;
+          this.Hostel = this.StoreObj.hostel;
+        }
       }
     },
   },
@@ -525,14 +554,15 @@ export default {
     async inviteMemberMethod() {
       const isValid = await this.$refs.alumniForm.validate();
       if (isValid.valid) {
-        console.log("VALIDATED");
         this.btnLoader = true;
         const inputParams = {
           alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
           creator_user_id: this.$store.getters.get_currentuser_details.user_id,
           user_email_id: this.memberEmail || undefined,
           phone_number:
-            `${this.memberCountryCode}${this.memberPhone}` || undefined,
+            this.memberCountryCode && this.memberPhone
+              ? `${this.memberCountryCode}${this.memberPhone}`
+              : undefined,
           user_name: this.memberName,
           user_type: this.memberUserType || undefined,
           profile_picture: undefined,
@@ -544,28 +574,83 @@ export default {
           designation: this.memberDesignation || undefined,
           company: this.memberCompany || undefined,
           course: this.memberCourse || undefined,
-          user_country_code: this.memberCountryCode || undefined,
+          user_country_code:
+            this.memberCountryCode && this.memberPhone
+              ? this.memberCountryCode
+              : undefined,
         };
         const response = await this.createMemberMethod(inputParams);
         if (response.status == "Success") {
           this.SnackBarComponent = {
-            snackbarVmodel: true,
-            snackbarColor: "green",
-            snackbarMessage: response.status_message,
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: response.status_message,
           };
           this.InviteMemberDialogEmit(2);
           this.btnLoader = false;
         }
       } else {
+        this.btnLoader = false;
         console.log("NOT_VALIDATED");
         this.SnackBarComponent = {
-          snackbarVmodel: true,
-          snackbarColor: "red",
-          snackbarMessage: "Kindly fill the required details..!",
+          SnackbarVmodel: true,
+          SnackbarColor: "red",
+          SnackbarText: "Kindly fill the required details..!",
         };
       }
     },
+    async updateMemberMethod() {
+      try {
+        this.btnLoader = true;
+        let inputparams = {
+          alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
+          updater_user_id: this.$store.getters.get_currentuser_details.user_id,
+          user_id: this.StoreObj.user_id,
+          user_email_id: this.memberEmail || undefined,
+          user_country_code: this.memberCountryCode || undefined,
+          phone_number:
+            this.memberCountryCode && this.memberPhone
+              ? `${this.memberCountryCode}${this.memberPhone}`
+              : undefined,
+          user_name: this.memberName,
+          user_type: this.memberUserType || undefined,
+          profile_picture: undefined,
+          current_location: undefined,
+          permanent_location: undefined,
+          current_country: undefined,
+          year_of_joining: this.memberYearOfJoining || undefined,
+          year_of_leaving: this.memberYearOfLeaving || undefined,
+          designation: this.memberDesignation || undefined,
+          company: this.memberCompany || undefined,
+          course: this.memberCourse || undefined,
+          department: this.Department || undefined,
+          hostel: this.Hostel || undefined,
+        };
+
+        let result = await client.graphql({
+          query: UpdateMember,
+          variables: {
+            input: inputparams,
+          },
+        });
+        console.log("result", result);
+        let ResultObj = JSON.parse(result.data.UpdateMember);
+        if (ResultObj.status == "Success") {
+          this.SnackBarComponent = {
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: ResultObj.status_message,
+          };
+          this.InviteMemberDialogEmit(2);
+        }
+        this.btnLoader = false;
+      } catch (error) {
+        this.btnLoader = false;
+        console.log("error", error);
+      }
+    },
     InviteMemberDialogEmit(Toggle) {
+      this.$refs.alumniForm.reset();
       this.$emit("clicked", Toggle);
     },
   },

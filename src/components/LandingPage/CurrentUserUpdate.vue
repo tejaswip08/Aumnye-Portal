@@ -194,6 +194,19 @@
                     />
                   </div>
                 </v-col>
+
+                <v-col cols="12" md="6">
+                  <div class="field-wrapper">
+                    <label class="field-label font-size-three">City</label>
+                    <v-text-field
+                      v-model="memberCity"
+                      variant="outlined"
+                      density="compact"
+                      hide-details
+                      placeholder="City"
+                    />
+                  </div>
+                </v-col>
                 <!-- <v-col cols="12" md="6">
                   <div class="field-wrapper">
                     <label class="field-label font-size-three">User Type</label>
@@ -253,7 +266,7 @@
                     <label class="field-label font-size-three">Course</label>
                     <v-select
                       v-model="memberCourse"
-                      :items="memberCourseItems"
+                      :items="courseMaster"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -321,7 +334,7 @@
                     >
                     <v-select
                       v-model="Department"
-                      :items="departmentOptions"
+                      :items="departmentMaster"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -345,7 +358,7 @@
                     <label class="field-label font-size-three">Hostel</label>
                     <v-select
                       v-model="Hostel"
-                      :items="hostelOptions"
+                      :items="hostelMaster"
                       variant="outlined"
                       density="compact"
                       hide-details
@@ -475,6 +488,7 @@ import ContryCodes from "@/JSON/CountryDialCode.json";
 import { Country, State } from "country-state-city";
 import { CommonUploadFile } from "@/mixins/Extras/UploadImageUrl.js";
 import { updateCurrentUsers } from "@/mixins/UpdateCurrentUser.js";
+import { ListMasterSettingsData } from "@/mixins/Settings/MasterSettings.js";
 
 export default {
   props: {
@@ -484,7 +498,7 @@ export default {
     Snackbar,
   },
 
-  mixins: [CommonUploadFile, updateCurrentUsers],
+  mixins: [CommonUploadFile, updateCurrentUsers, ListMasterSettingsData],
   data: () => ({
     countries: [],
     states: [],
@@ -515,32 +529,10 @@ export default {
     memberCourseItems: [],
     memberRoles: [],
     memberUserTypeItems: ["Admin", "Alumni Coordinator", "Event Manager"],
-    memberCourseItems: [
-      "BE",
-      "BTech",
-      "BSc",
-      "BCom",
-      "BA",
-      "BBA",
-      "BCA",
-      "LLB",
-      "MBBS",
-      "BPharm",
-    ],
-    departmentOptions: [
-      "Computer Science",
-      "Mechanical Engineering",
-      "Electrical Engineering",
-      "Civil Engineering",
-      "Business Administration",
-    ],
-    hostelOptions: [
-      "Hostel A",
-      "Hostel B",
-      "Hostel C",
-      "Girls Hostel",
-      "Boys Hostel",
-    ],
+    departmentMaster: [],
+    hostelMaster: [],
+    courseMaster: [],
+
     selectedImageBlob: "",
     profilePicFile: {},
     years: Array.from({ length: 30 }, (_, i) => 2025 - i),
@@ -561,30 +553,36 @@ export default {
   watch: {
     UpdateCurrentUserDialog(val) {
       if (val == true) {
+        this.listMasterSettingsMethod();
+
         this.countryCodeList = ContryCodes;
         this.countries = Country.getAllCountries();
         this.getCurrentInfoObj = {
           ...this.$store.getters.get_currentuser_details,
         };
         this.memberCountryCode = this.getCurrentInfoObj.user_country_code;
-        this.memberCountry = Country.getCountryByCode(
-          this.getCurrentInfoObj.current_country
-        );
+        this.memberCountry = this.getCurrentInfoObj.current_country;
         this.memberEmail = this.getCurrentInfoObj.user_email_id;
         this.memberName = this.getCurrentInfoObj.user_name;
         this.memberPhone = this.getCurrentInfoObj.phone_number;
+        this.memberState = this.getCurrentInfoObj.user_state;
+        this.memberCity = this.getCurrentInfoObj.user_city;
         this.memberCompany =
           this.getCurrentInfoObj &&
           this.getCurrentInfoObj.alumnnye_details &&
           this.getCurrentInfoObj.alumnnye_details.company;
-        this.memberDesignation = this.getCurrentInfoObj.department;
+        this.Department = this.getCurrentInfoObj.department;
+        this.Hostel = this.getCurrentInfoObj.hostel;
+        this.memberYearOfJoining = this.getCurrentInfoObj.year_of_joining;
+        this.memberCourse = this.getCurrentInfoObj.course;
         console.log("CREATE_MEMBER_WATCHER", this.getCurrentInfoObj);
       }
     },
     memberCountry(newVal) {
+      console.log("memberCountry", newVal);
       if (newVal) {
-        this.states = State.getStatesOfCountry(newVal.isoCode);
-        this.memberState = null;
+        this.states = State.getStatesOfCountry("IN");
+        // this.memberState = null;
       } else {
         this.states = [];
       }
@@ -610,6 +608,7 @@ export default {
         console.log("VALIDATED");
         let UploadedResult;
         if (this.selectedFile != null) {
+          console.log("this.selectedFile", this.selectedFile);
           UploadedResult = await this.CommonUploadFileMethod(
             `ProfilePictures/${new Date().getTime()}.${
               this.selectedFile.name.split(".")[
@@ -624,8 +623,11 @@ export default {
           alumnye_id: this.$store.getters.get_currentuser_details.alumnye_id,
           user_id: this.$store.getters.get_currentuser_details.user_id,
           user_email_id: this.memberEmail || undefined,
+          user_country_code: this.memberCountryCode || undefined,
           phone_number:
-            `${this.memberCountryCode}${this.memberPhone}` || undefined,
+            this.memberPhone && this.memberCountryCode
+              ? `${this.memberCountryCode}${this.memberPhone}`
+              : undefined,
           user_name: this.memberName || undefined,
           user_type: this.memberUserType || undefined,
           alumni_type:
@@ -635,6 +637,8 @@ export default {
           current_location: undefined,
           permanent_location: undefined,
           current_country: this.memberCountry.name || undefined,
+          user_state: this.memberState.name || undefined,
+          user_city: this.memberCity || undefined,
           year_of_joining: this.memberYearOfJoining || undefined,
           year_of_leaving: this.memberYearOfLeaving || undefined,
           designation: this.memberDesignation || undefined,
@@ -647,19 +651,21 @@ export default {
         const response = await this.updateCurrentUserMethod(inputParams);
         if (response.status == "Success") {
           this.SnackBarComponent = {
-            snackbarVmodel: true,
-            snackbarColor: "green",
-            snackbarMessage: response.status_message,
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: response.Status_Message,
           };
           this.InviteMemberDialogEmit(2);
           this.btnLoader = false;
         }
       } else {
+        this.btnLoader = false;
+
         console.log("NOT_VALIDATED");
         this.SnackBarComponent = {
-          snackbarVmodel: true,
-          snackbarColor: "red",
-          snackbarMessage: "Kindly fill the required details..!",
+          SnackbarVmodel: true,
+          SnackbarColor: "red",
+          SnackbarText: "Kindly fill the required details..!",
         };
       }
     },

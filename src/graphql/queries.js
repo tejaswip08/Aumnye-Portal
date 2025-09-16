@@ -36,3 +36,8 @@ export const GetParticularMonthReport = /* GraphQL */ `
     GetParticularMonthReport(input: $input)
   }
 `;
+export const ListEvents = /* GraphQL */ `
+  query ListEvents($input: ListEvents) {
+    ListEvents(input: $input)
+  }
+`;

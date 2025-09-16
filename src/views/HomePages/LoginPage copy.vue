@@ -467,9 +467,9 @@ export default {
         console.log("error while Signing Up", error);
         this.SignUpLoading = false;
         this.SnackBarComponent = {
-          snackbarVmodel: true,
-          snackbarColor: "red",
-          snackbarMessage: error.message,
+          SnackbarVmodel: true,
+          SnackbarColor: "red",
+          SnackbarText: error.message,
         };
       }
     },

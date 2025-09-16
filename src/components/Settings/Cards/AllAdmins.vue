@@ -1,36 +1,35 @@
 <template>
   <div>
-    <v-toolbar color="transparent">
-      <div>
-        <!-- <div class="font-size-one font-weight-one">All Users</div> -->
-      </div>
-      <v-spacer />
-      <v-text-field
-        v-model="search"
-        color="primary"
-        label="Search Users"
-        variant="outlined"
-        rounded="lg"
-        density="compact"
-        hide-details
-        style="max-width: 250px"
-        class="mr-4 custom-label"
-        prepend-inner-icon="mdi-magnify"
-      />
-      <v-btn
-        variant="tonal"
-        color="primary"
-        class="text-capitalize font-size-three"
-        @click="onboardUserMethod()"
-        >Add Admin
-        <v-icon size="17">mdi-plus</v-icon>
-        <!-- 
+    <v-card elevation="0" class="card-property">
+      <v-toolbar color="white">
+        <v-text-field
+          v-model="search"
+          color="primary"
+          label="Search Administrators"
+          variant="outlined"
+          rounded="lg"
+          density="compact"
+          hide-details
+          style="max-width: 350px"
+          class="ml-4 custom-label"
+          prepend-inner-icon="mdi-magnify"
+        />
+        <v-spacer />
+
+        <v-btn
+          variant="tonal"
+          color="primary"
+          class="text-capitalize font-size-three mr-4"
+          @click="onboardUserMethod({}, 'CREATE')"
+          >Add Administrators
+          <v-icon size="17">mdi-plus</v-icon>
+          <!-- 
         <span style="display: inline-flex; width: 16px; height: 16px">
           <PlusIcon class="text-white" />
         </span> -->
-      </v-btn>
-    </v-toolbar>
-    <v-card elevation="0" class="card-property">
+        </v-btn>
+      </v-toolbar>
+
       <v-card-text>
         <v-data-table
           density="compact"
@@ -45,13 +44,18 @@
           hide-default-footer
           class="TableValFontsize"
         >
-          <template v-slot:[`item.user_name`]="{ item }">
-            <div class="ma-2" style="position: relative; right: 15px">
+          <template v-slot:[`item.user_email_id`]="{ item }">
+            <div
+              v-if="item.user_email_id"
+              class="ma-2"
+              style="position: relative; right: 15px"
+            >
               <v-avatar size="40" class="app-bar-avatar text-white">{{
                 item.user_email_id.slice(0, 2).toUpperCase()
               }}</v-avatar>
-              <span class="ml-2">{{ item.user_name }}</span>
+              <span class="ml-2">{{ item.user_email_id }}</span>
             </div>
+            <div v-else>-</div>
           </template>
           <template v-slot:[`item.user_phone_number`]="{ item }">
             <div>
@@ -76,7 +80,12 @@
           </template>
           <template v-slot:[`item.actions`]="{ item }">
             <div>
-              <v-btn icon flat size="small">
+              <v-btn
+                icon
+                flat
+                size="small"
+                @click.stop="onboardUserMethod(item, 'EDIT')"
+              >
                 <span style="display: inline-flex; width: 16px; height: 16px">
                   <PencilSquareIcon class="text-green" />
                 </span>
@@ -114,6 +123,7 @@
     <Overlay :Overlay="enableOverlay" />
     <CreateUser
       :CreateUserDialog="CreateUserDialog"
+      :StoreObj="StoreObj"
       @clicked="createUserDialogEmit"
     />
   </div>
@@ -144,22 +154,22 @@ export default {
     CreateUserDialog: false,
     enableOverlay: false,
     usersHeader: [
-      {
-        title: "Name",
-        value: "user_name",
-      },
-      {
-        title: "Phone Number",
-        value: "user_phone_number",
-      },
+      // {
+      //   title: "Name",
+      //   value: "user_name",
+      // },
+      // {
+      //   title: "Phone Number",
+      //   value: "user_phone_number",
+      // },
       {
         title: "Email ID",
         value: "user_email_id",
       },
-      {
-        title: "Created On",
-        value: "user_created_on",
-      },
+      // {
+      //   title: "Created On",
+      //   value: "user_created_on",
+      // },
       {
         title: "Type",
         value: "user_type",
@@ -173,7 +183,7 @@ export default {
         value: "actions",
       },
     ],
-
+    StoreObj: {},
     usersList: [],
   }),
 
@@ -196,12 +206,17 @@ export default {
   },
 
   methods: {
-    onboardUserMethod() {
+    onboardUserMethod(item, action) {
+      this.StoreObj = item;
+      this.StoreObj.action = action;
       this.CreateUserDialog = true;
     },
 
-    createUserDialogEmit() {
+    createUserDialogEmit(Toggle) {
       this.CreateUserDialog = false;
+      if (Toggle == 2) {
+        this.usersList = this.ListAlumnyeUsers();
+      }
     },
   },
 };

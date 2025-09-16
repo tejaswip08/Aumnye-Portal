@@ -14,9 +14,12 @@ export const createMember = {
           },
         });
         const response = JSON.parse(result.data.CreateMember);
+        this.btnLoader = false;
         return response;
         // console.log("MEMBER_CREATED", result);
       } catch (error) {
+        this.btnLoader = false;
+        console.log("ALUMYE_USER", error);
         //
       }
     },

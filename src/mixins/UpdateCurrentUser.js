@@ -16,6 +16,8 @@ export const updateCurrentUsers = {
         return response;
         // console.log("MEMBER_CREATED", result);
       } catch (error) {
+        this.btnLoader = false;
+        console.log("current", error);
         //
       }
     },

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center items-center py-6">
+  <div class="flex justify-center items-center" align="center">
     <v-card
       class="CardBorderRadius app-font-style elevation-6"
       max-width="900"
@@ -30,7 +30,7 @@
       <v-divider />
 
       <div style="overflow-y: auto; max-height: 75vh">
-        <v-form ref="eventForm" class="px-6 py-4">
+        <v-form ref="eventForm" class="px-6 py-2">
           <!-- Banner -->
           <v-col cols="12" align="center">
             <v-card
@@ -38,6 +38,7 @@
               elevation="3"
               width="60%"
               style="overflow: hidden"
+              @click="$refs.bannerInput.click()"
             >
               <v-img
                 v-if="bannerPreview"
@@ -59,16 +60,6 @@
                 <v-icon size="80" color="white">mdi-panorama</v-icon>
               </div>
 
-              <v-btn
-                class="mt-3 mb-4 text-white"
-                color="deep-purple-accent-3"
-                variant="elevated"
-                prepend-icon="mdi-upload"
-                @click="$refs.bannerInput.click()"
-              >
-                Upload Banner
-              </v-btn>
-
               <input
                 ref="bannerInput"
                 type="file"
@@ -80,10 +71,8 @@
           </v-col>
 
           <!-- Event Info -->
-          <h3 class="text-md font-weight-bold mb-2 text-grey-darken-2">
-            📌 Event Info
-          </h3>
-          <v-row>
+
+          <v-row class="mt-2">
             <v-col cols="12" md="6">
               <v-text-field
                 v-model="event.title"
@@ -130,9 +119,6 @@
           </v-row>
 
           <!-- Dates -->
-          <h3 class="text-md font-weight-bold mb-2 text-grey-darken-2">
-            📅 Schedule
-          </h3>
           <v-row>
             <v-col cols="12" md="6">
               <v-text-field
@@ -160,9 +146,7 @@
           </v-row>
 
           <!-- Mode -->
-          <h3 class="text-md font-weight-bold mb-2 text-grey-darken-2">
-            🌐 Mode
-          </h3>
+
           <v-row>
             <v-col cols="12" md="6">
               <v-select

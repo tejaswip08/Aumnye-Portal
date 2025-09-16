@@ -85,9 +85,9 @@ export default {
       const response = await this.approveRejectMemberApiMethod(inputParams);
       if (response.status == "Success") {
         this.SnackBarComponent = {
-          snackbarVmodel: true,
-          snackbarColor: "green",
-          snackbarMessage: response.status_message,
+          SnackbarVmodel: true,
+          SnackbarColor: "green",
+          SnackbarText: response.status_message,
         };
         this.approveRejectMemberDialogEmit(2);
       }

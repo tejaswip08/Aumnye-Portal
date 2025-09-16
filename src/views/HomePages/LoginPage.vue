@@ -491,9 +491,9 @@ export default {
           this.showOTP = true;
           this.form.email = this.SignUP.Email;
           this.SnackBarComponent = {
-            snackbarVmodel: true,
-            snackbarColor: "green",
-            snackbarMessage: "OTP sent to " + this.SignUP.Email,
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: "OTP sent to " + this.SignUP.Email,
           };
           await this.signInMethod("SEND_OTP");
         }
@@ -512,18 +512,18 @@ export default {
           );
 
           console.log("response", response);
-          if (response.data.status == "Success") {
-            this.StopLoading = true;
-            this.step = 1;
-            this.showOTP = true;
-            this.form.email = this.SignUP.Email;
-            this.SnackBarComponent = {
-              snackbarVmodel: true,
-              snackbarColor: "green",
-              snackbarMessage: "OTP sent to " + this.SignUP.Email,
-            };
-            await this.signInMethod("SEND_OTP");
-          }
+          // if (response.data.status == "Success") {
+          this.StopLoading = true;
+          this.step = 1;
+          this.showOTP = true;
+          this.form.email = this.SignUP.Email;
+          this.SnackBarComponent = {
+            SnackbarVmodel: true,
+            SnackbarColor: "green",
+            SnackbarText: 'Verify Email "OTP sent to ' + this.SignUP.Email,
+          };
+          await this.signInMethod("SEND_OTP");
+          // }
           this.SignUpLoading = false;
           // this.StopLoading = true;
           // this.step = 1;
@@ -532,11 +532,11 @@ export default {
           // await this.signInMethod("SEND_OTP");
         }
         this.SignUpLoading = false;
-        this.SnackBarComponent = {
-          snackbarVmodel: true,
-          snackbarColor: "red",
-          snackbarMessage: error.message,
-        };
+        // this.SnackBarComponent = {
+        //   SnackbarVmodel: true,
+        //   SnackbarColor: "red",
+        //   SnackbarText: error.message,
+        // };
       }
     },
     ActivateMethod() {

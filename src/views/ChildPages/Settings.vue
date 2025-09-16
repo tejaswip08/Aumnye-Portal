@@ -3,7 +3,7 @@
     <!-- Tabs Header -->
     <v-tabs v-model="CurrentView" class="custom-tabs" density="compact">
       <v-tab value="ABOUT_ALUMNI">About Alumni</v-tab>
-      <v-tab value="ALL_ADMIN">All Admins</v-tab>
+      <v-tab value="ALL_ADMIN">Administrators</v-tab>
     </v-tabs>
 
     <!-- Tab Content -->

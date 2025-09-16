@@ -6,9 +6,9 @@
     />
     <div v-if="CurrentView == 'EVENTS_LIST'">
       <v-card class="pa-3 card-property">
-        <v-toolbar color="transparent">
-          <v-spacer />
-          <div>
+        <!-- <v-toolbar color="transparent">
+          <v-spacer /> -->
+        <!-- <div>
             <v-text-field
               v-model="search"
               color="primary"
@@ -21,16 +21,16 @@
               class="mr-4 custom-label"
               prepend-inner-icon="mdi-magnify"
             />
-          </div>
-          <v-btn
+          </div> -->
+        <!-- <v-btn
             color="primary"
             variant="tonal"
             class="mt-n3 mr-3"
             @click="CurrentView = 'CREATE_EVENT'"
             ><v-icon size="small" class="mr-1">mdi-calendar</v-icon>Create
             Event</v-btn
-          >
-        </v-toolbar>
+          > -->
+        <!-- </v-toolbar> -->
         <v-row>
           <v-col
             v-for="(event, index) in events"
@@ -96,7 +96,8 @@ export default {
       {
         title: "Startup Pitch Day",
         date: "Nov 3, 2025",
-        description: "Pitch your startup idea to investors and mentors.",
+        description:
+          "Pitch your startup idea to investors, mentors and experts.",
         image: "https://picsum.photos/500/300?random=2",
       },
       {

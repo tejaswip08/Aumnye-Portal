@@ -5,6 +5,7 @@ export const CommonUploadFile = {
   methods: {
     async CommonUploadFileMethod(key, file) {
       try {
+        console.log("Key", key, file);
         const result = await uploadData({
           path: key,
           data: file,

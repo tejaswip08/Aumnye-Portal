@@ -70,3 +70,13 @@ export const ListMasterSettings = /* GraphQL */ `
     ListMasterSettings(input: $input)
   }
 `;
+export const CreateEvent = /* GraphQL */ `
+  mutation CreateEvent($input: CreateEventInput) {
+    CreateEvent(input: $input)
+  }
+`;
+export const UpdateAlumne = /* GraphQL */ `
+  mutation UpdateAlumne($input: UpdateAlumneInput) {
+    UpdateAlumne(input: $input)
+  }
+`;
