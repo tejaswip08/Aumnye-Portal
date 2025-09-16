@@ -145,7 +145,6 @@
             </div>
           </template>
 
-          <!-- Dropdown Card -->
           <v-card
             class="rounded-xl"
             elevation="8"
