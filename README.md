@@ -3,9 +3,6 @@
 Welcome to **Alumnye Portal** – a modern platform for alumni networking, events, and announcements.  
 Easily manage members, events, announcements, and approvals in one place. 🌐✨
 
-![Dashboard Preview](./screenshot.png)  
-_(Dashboard view of Alumnye Portal)_
-
 ---
 
 ## 🌟 Features
